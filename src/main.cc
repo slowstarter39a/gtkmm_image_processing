@@ -22,11 +22,6 @@
 
 MagnoliaMainWindow *p_window = nullptr;
 
-void on_sub_menu_about_activate(void)
-{
-	std::cout<<"About menu selected()!"<<std::endl;
-}
-
 int main(int argc, char *argv[])
 {
 	auto app = Gtk::Application::create(argc, argv, "image processing");
@@ -34,7 +29,8 @@ int main(int argc, char *argv[])
 	auto refBuilder = Gtk::Builder::create();
 	try
 	{
-		refBuilder->add_from_file("../glade/main_ui.glade");
+		//refBuilder->add_from_file("../glade/main_ui.glade");
+		refBuilder->add_from_file("glade/main_ui.glade");
 	}
 	catch(const Glib::FileError& ex)
 	{
@@ -55,6 +51,7 @@ int main(int argc, char *argv[])
 	refBuilder->get_widget_derived("main_ui", p_window);
 	if(p_window)
 	{
+#if 0
 		Gtk::MenuBar *p_main_menu_bar = nullptr;
 		refBuilder->get_widget("main_menu_bar", p_main_menu_bar);
 
@@ -68,6 +65,7 @@ int main(int argc, char *argv[])
 		refBuilder->get_widget("sub_menu_about", p_sub_menu_about);
 
 		p_sub_menu_about->signal_activate().connect(sigc::ptr_fun(on_sub_menu_about_activate));
+#endif
 		app->run(*p_window);
 	}
 
