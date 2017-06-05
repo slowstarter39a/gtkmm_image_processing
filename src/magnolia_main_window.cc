@@ -35,10 +35,14 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 
 	//Gtk::ImageMenuItem *p_sub_menu_about = nullptr;
 	magnolia_main_ref_glade_->get_widget("sub_menu_new", p_sub_menu_new_);
+	magnolia_main_ref_glade_->get_widget("sub_menu_open", p_sub_menu_open_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
 
 	p_sub_menu_new_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_new_activate));
+
+	p_sub_menu_open_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_menu_open_activate));
 
 	p_sub_menu_about_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_about_activate));
@@ -75,6 +79,66 @@ void MagnoliaMainWindow::on_sub_menu_new_activate(void)
 	std::cout<<"on_sub_menu_new_activate()"<<std::endl;
 }
 
+void MagnoliaMainWindow::on_sub_menu_open_activate(void)
+{
+	Gtk::FileChooserDialog dialog("Please choose a file", 
+			Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.set_transient_for(*this);
+
+	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+	dialog.add_button("_Open", Gtk::RESPONSE_OK);
+
+	auto filter_image= Gtk::FileFilter::create();
+	filter_image->set_name("Image files");
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.jpeg");
+	dialog.add_filter(filter_image);
+
+	auto filter_any = Gtk::FileFilter::create();
+	filter_any->set_name("Any files");
+	filter_any->add_pattern("*");
+	dialog.add_filter(filter_any);
+
+	int result = dialog.run();
+
+	switch(result)
+	{
+		case(Gtk::RESPONSE_OK):
+		{
+			std::cout<<"Open clicked."<<std::endl;
+
+			std::string filename = dialog.get_filename();
+			std::cout<<"File selected: " <<filename <<std::endl;
+//			Gtk::Image image2(filename);
+			image2.set(filename);
+			magnolia_image_window_.add(image2);
+			image2.show();
+			on_sub_menu_new_activate();
+			
+			break;
+		}
+
+		case(Gtk::RESPONSE_CANCEL):
+		{
+			std::cout<<"Cancel clicked." <<std::endl;
+			break;
+		}
+
+		default:
+		{
+			std::cout<<"Unexpected button clicked."<<std::endl;
+			break;
+		}
+	}
+	
+}
+
 void MagnoliaMainWindow::on_sub_menu_about_activate(void)
 {
 //	std::cout<<"About menu selected()!"<<std::endl;
@@ -96,3 +160,4 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 			break; 
 	}
 }
+
