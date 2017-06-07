@@ -24,6 +24,24 @@ MagnoliaMainWindow::MagnoliaMainWindow()
 { 
 }
 
+MagnoliaMainWindow::~MagnoliaMainWindow()
+{
+	std::map<int, ImageWindowStruct*>::iterator iter;
+	ImageWindowStruct *img_window = NULL;
+	
+	for(iter = image_windows_.begin(); iter != image_windows_.end(); iter++){
+		img_window = iter->second;
+
+		std::stringstream ss;
+		ss << "Deleting Window '" << iter->first <<"'";
+		std::cout << ss.str() << std::endl;
+
+		delete img_window->magnolia_image_window;
+		delete img_window;
+	}
+
+}
+
 MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
 	: Gtk::Window(cobject),
 	magnolia_main_ref_glade_(refGlade)
@@ -64,16 +82,11 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	show_all_children();
 }
 
-MagnoliaMainWindow::~MagnoliaMainWindow()
-{
-
-}
-
 void MagnoliaMainWindow::on_sub_menu_new_activate(void)
 {
-	//MagnoliaImageWindow magnolia_image_window_;
-	magnolia_image_window_.set_title("Magnolia Image window");
-	magnolia_image_window_.show();
+	//MagnoliaImageWindow magnolia_image_window;
+	//magnolia_image_window_.set_title("Magnolia Image window");
+	//magnolia_image_window_.show();
 	//magnolia_image_window_.set_deletable(false);
 	//magnolia_image_window_.move(400,200);
 	std::cout<<"on_sub_menu_new_activate()"<<std::endl;
@@ -115,11 +128,22 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 
 			std::string filename = dialog.get_filename();
 			std::cout<<"File selected: " <<filename <<std::endl;
-//			Gtk::Image image2(filename);
-			image2.set(filename);
-			magnolia_image_window_.add(image2);
-			image2.show();
-			on_sub_menu_new_activate();
+			ImageWindowStruct *image_window = new ImageWindowStruct;
+			image_window->magnolia_image_window = new MagnoliaImageWindow(filename);
+			image_window->window_id = window_cnt;
+
+			std::stringstream ss;
+			ss << "New image window '" << window_cnt << "'";
+			image_window->magnolia_image_window->set_title(filename);
+			image_window->magnolia_image_window->signal_hide().connect( 
+				sigc::bind<ImageWindowStruct*>(sigc::mem_fun(*this, 
+				&MagnoliaMainWindow::on_image_window_close), image_window));
+
+			image_windows_[window_cnt++] = image_window;
+			
+			image_window->magnolia_image_window->show();
+
+			//on_sub_menu_new_activate();
 			
 			break;
 		}
@@ -161,3 +185,13 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 	}
 }
 
+void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *image_window)
+{
+	std::stringstream ss;
+
+	ss << "Deleting Window '" << image_window->window_id << "'";
+	std::cout << ss.str() << std::endl;
+	image_windows_.erase(image_window->window_id);
+	delete image_window->magnolia_image_window;
+	delete image_window; 
+}

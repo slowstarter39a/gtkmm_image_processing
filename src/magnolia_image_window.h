@@ -20,11 +20,21 @@
 
 #include <gtkmm.h>
 
+struct ImageListStruct
+{
+	int image_id;
+	Gtk::Image *image;
+};
+
 class MagnoliaImageWindow :public Gtk::Window
 {
 	public:
 		MagnoliaImageWindow();
+		MagnoliaImageWindow(std::string filename);
 		virtual ~MagnoliaImageWindow();
+	private:
+		int image_cnt = 0;
+		std::map<int, Gtk::Image*> image_list_;
 };
 
 #endif //MAGNOLIA_IMAGE_WINDOW_H
