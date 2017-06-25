@@ -1,12 +1,20 @@
-CC=g++
+CC=g++ -std=c++11
 TARGET=magnolia
-CFLAGS=-std=c++11
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs`
 
-SRC=main.cc magnolia_main_window.cc magnolia_image_window.cc
+SRCS := $(wildcard src/*.cc)
+INCLUDES := $(wildcard src/*.h)
+OBJS := $(SRCS:.cc=.o)
 
-all:
-	$(CC) -o $(TARGET) $(SRC) `pkg-config gtkmm-3.0 --cflags --libs` $(CFLAGS)
+Q=@echo
 
-clean:
-	rm -rf $(TARGET) *.o
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $(addprefix $(OUT)/,$^) $(CFLAGS)
+	@echo "Compilation complete!"
+
+$(OBJS): %.o : %.cc
+	$(CC) $(CFLAGS) -c $< -o $(OUT)/$@
+
 
