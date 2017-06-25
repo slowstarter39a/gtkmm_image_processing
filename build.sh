@@ -1,19 +1,10 @@
 #!/bin/sh
 
-SRC=src
-TARGET=magnolia
+export SRC=src
+export TARGET=magnolia
+export OUT=out
+CPU_CORE_NUM=`nproc --all`
 
-make -C src $1
+mkdir -p $OUT/$SRC
+make -j$CPU_CORE_NUM $1 
 
-if [ $# -eq 1 ] 
-then
-	if [ $1 = clean ]
-	then 
-		rm $TARGET
-	fi
-fi
-
-if [ -f $SRC/$TARGET ]
-then
-	mv $SRC/$TARGET ./
-fi
