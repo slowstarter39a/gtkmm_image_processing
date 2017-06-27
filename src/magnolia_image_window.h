@@ -15,14 +15,18 @@
  *
  * =====================================================================================
  */
-#ifndef MAGNOLIA_IMAGE_WINDOW_H
-#define MAGNOLIA_IMAGE_WINDOW_H
+#ifndef _MAGNOLIA_IMAGE_WINDOW_H
+#define _MAGNOLIA_IMAGE_WINDOW_H
 
 #include <gtkmm.h>
+#include <gdkmm/rgba.h>
+#include <gtkmm/grid.h>
 
 struct ImageListStruct
 {
 	int image_id;
+	Gtk::Frame *frame;
+	Gtk::EventBox *eventbox;
 	Gtk::Image *image;
 };
 
@@ -32,9 +36,11 @@ class MagnoliaImageWindow :public Gtk::Window
 		MagnoliaImageWindow();
 		MagnoliaImageWindow(std::string filename);
 		virtual ~MagnoliaImageWindow();
+		virtual void on_show();
 	private:
 		int image_cnt = 0;
-		std::map<int, Gtk::Image*> image_list_;
+		Gtk::Fixed *fixed_;
+		std::map<int, ImageListStruct*> image_list_;
 };
 
-#endif //MAGNOLIA_IMAGE_WINDOW_H
+#endif //_MAGNOLIA_IMAGE_WINDOW_H

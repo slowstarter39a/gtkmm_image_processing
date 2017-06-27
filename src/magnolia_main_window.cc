@@ -20,6 +20,8 @@
 #include "magnolia_image_window.h"
 #include <iostream>
 
+using namespace std;
+
 MagnoliaMainWindow::MagnoliaMainWindow()
 { 
 }
@@ -46,12 +48,10 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	: Gtk::Window(cobject),
 	magnolia_main_ref_glade_(refGlade)
 {
-//	Gtk::MenuBar *p_main_menu_bar = nullptr;
 	magnolia_main_ref_glade_->get_widget("main_menu_bar", p_main_menu_bar_);
 
 	magnolia_about_dialog_.set_transient_for(*this);
 
-	//Gtk::ImageMenuItem *p_sub_menu_about = nullptr;
 	magnolia_main_ref_glade_->get_widget("sub_menu_new", p_sub_menu_new_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_open", p_sub_menu_open_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
@@ -66,16 +66,11 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 				&MagnoliaMainWindow::on_sub_menu_about_activate));
 
 	magnolia_about_dialog_.set_transient_for(*this);
-	/*  
-	magnolia_about_dialog_.set_logo(Gdk::Pixbuf::create_from_resource(
-				"/about/gtkmm_logo.gif", -1, 40, true));
-	*/
 	magnolia_about_dialog_.set_program_name("Magnolia");
 	magnolia_about_dialog_.set_version("0.0.0");
 	magnolia_about_dialog_.set_copyright("slowstarter80");
 	magnolia_about_dialog_.set_comments("This is Magnolia application");
 	magnolia_about_dialog_.set_license("LGPL");
-//magnolia_about_dialog_.set_authors("slowstarter80");
 	magnolia_about_dialog_.signal_response().connect(sigc::mem_fun(*this, 
 				&MagnoliaMainWindow::on_about_dialog_response));
 
@@ -128,20 +123,22 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 
 			std::string filename = dialog.get_filename();
 			std::cout<<"File selected: " <<filename <<std::endl;
-			ImageWindowStruct *image_window = new ImageWindowStruct;
-			image_window->magnolia_image_window = new MagnoliaImageWindow(filename);
-			image_window->window_id = window_cnt;
+			ImageWindowStruct *img_window = new ImageWindowStruct;
+			img_window->magnolia_image_window = new MagnoliaImageWindow(filename);
+			img_window->window_id = window_cnt;
+
 
 			std::stringstream ss;
 			ss << "New image window '" << window_cnt << "'";
-			image_window->magnolia_image_window->set_title(filename);
-			image_window->magnolia_image_window->signal_hide().connect( 
+			img_window->magnolia_image_window->set_title(filename);
+			img_window->magnolia_image_window->signal_hide().connect( 
 				sigc::bind<ImageWindowStruct*>(sigc::mem_fun(*this, 
-				&MagnoliaMainWindow::on_image_window_close), image_window));
+				&MagnoliaMainWindow::on_image_window_close), img_window));
 
-			image_windows_[window_cnt++] = image_window;
+			image_windows_[window_cnt++] = img_window;
 			
-			image_window->magnolia_image_window->show();
+			img_window->magnolia_image_window->signal_realize();
+			img_window->magnolia_image_window->show();
 
 			//on_sub_menu_new_activate();
 			
@@ -165,7 +162,6 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 
 void MagnoliaMainWindow::on_sub_menu_about_activate(void)
 {
-//	std::cout<<"About menu selected()!"<<std::endl;
 	magnolia_about_dialog_.show();
 	magnolia_about_dialog_.present();
 }
@@ -185,13 +181,13 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 	}
 }
 
-void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *image_window)
+void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 {
 	std::stringstream ss;
 
-	ss << "Deleting Window '" << image_window->window_id << "'";
+	ss << "Deleting Window '" << img_window->window_id << "'";
 	std::cout << ss.str() << std::endl;
-	image_windows_.erase(image_window->window_id);
-	delete image_window->magnolia_image_window;
-	delete image_window; 
+	image_windows_.erase(img_window->window_id);
+	delete img_window->magnolia_image_window;
+	delete img_window; 
 }

@@ -15,8 +15,8 @@
  *
  * =====================================================================================
  */
-#ifndef MAGNOLIA_MAIN_WINDOW_H
-#define MAGNOLIA_MAIN_WINDOW_H
+#ifndef _MAGNOLIA_MAIN_WINDOW_H
+#define _MAGNOLIA_MAIN_WINDOW_H
 
 #include <gtkmm.h>
 #include "magnolia_image_window.h"
@@ -46,8 +46,6 @@ class MagnoliaMainWindow : public Gtk::Window
 
 		std::map<int, ImageWindowStruct*> image_windows_;
 
-//		Gtk::Image image2;
-
 		void on_sub_menu_new_activate();
 		void on_sub_menu_open_activate();
 		void on_sub_menu_about_activate();
@@ -56,4 +54,4 @@ class MagnoliaMainWindow : public Gtk::Window
 };
 
 
-#endif //MAGNOLIA_MAIN_WINDOW_H
+#endif //_MAGNOLIA_MAIN_WINDOW_H
