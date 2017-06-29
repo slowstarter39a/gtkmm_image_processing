@@ -37,6 +37,8 @@ class MagnoliaImageWindow :public Gtk::Window
 		MagnoliaImageWindow(std::string filename);
 		virtual ~MagnoliaImageWindow();
 		virtual void on_show();
+		//virtual void on_state_changed(Gtk::StateType previous_state);
+		virtual bool on_focus_in_event(GdkEventFocus* focus_event);
 	private:
 		int image_cnt = 0;
 		Gtk::Fixed *fixed_;
