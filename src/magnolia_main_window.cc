@@ -127,6 +127,7 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 			img_window->magnolia_image_window = new MagnoliaImageWindow(filename);
 			img_window->window_id = window_cnt;
 
+			img_window->magnolia_image_window->set_transient_for(*this);
 
 			std::stringstream ss;
 			ss << "New image window '" << window_cnt << "'";
@@ -190,4 +191,13 @@ void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 	image_windows_.erase(img_window->window_id);
 	delete img_window->magnolia_image_window;
 	delete img_window; 
+}
+
+void MagnoliaMainWindow::SetCurrentImageWindow(MagnoliaImageWindow* current_window)
+{
+	current_window_  = current_window; 
+	std::stringstream ss;
+
+	ss << "Set current Window '" << current_window_<< "'";
+	std::cout << ss.str() << std::endl;
 }

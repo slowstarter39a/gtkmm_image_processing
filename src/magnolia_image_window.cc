@@ -18,6 +18,7 @@
 
 #include "magnolia_image_window.h"
 #include <iostream>
+#include "magnolia_main_window.h"
 
 using namespace std;
 
@@ -95,3 +96,14 @@ void MagnoliaImageWindow::on_show()
 
 }
 
+
+bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
+{
+	std::cout<<"on_focus_in_event"<<endl;
+
+	Gtk::Window *parent = get_transient_for();
+	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
+	magnolia_parent->SetCurrentImageWindow(this); 
+
+	return 1;
+}

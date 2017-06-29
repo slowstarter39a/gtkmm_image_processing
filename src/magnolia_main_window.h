@@ -33,6 +33,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		MagnoliaMainWindow();
 		MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
 		virtual ~MagnoliaMainWindow();
+		virtual void SetCurrentImageWindow(MagnoliaImageWindow* current_window);
 
 	protected:
 	private:
@@ -43,6 +44,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::ImageMenuItem *p_sub_menu_new_;
 		Gtk::ImageMenuItem *p_sub_menu_open_;
 		Gtk::ImageMenuItem *p_sub_menu_about_;
+		MagnoliaImageWindow *current_window_ = NULL;
 
 		std::map<int, ImageWindowStruct*> image_windows_;
 
@@ -51,6 +53,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		void on_sub_menu_about_activate();
 		void on_about_dialog_response(int response_id);
 		void on_image_window_close(ImageWindowStruct *image_window);
+		
 };
 
 
