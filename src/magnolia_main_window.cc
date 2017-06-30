@@ -42,6 +42,10 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 		delete img_window;
 	}
 
+	if(magnolia_control_window_) {
+		delete magnolia_control_window_;
+	}
+
 }
 
 MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
@@ -50,10 +54,9 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 {
 	magnolia_main_ref_glade_->get_widget("main_menu_bar", p_main_menu_bar_);
 
-	magnolia_about_dialog_.set_transient_for(*this);
-
 	magnolia_main_ref_glade_->get_widget("sub_menu_new", p_sub_menu_new_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_open", p_sub_menu_open_);
+	magnolia_main_ref_glade_->get_widget("sub_menu_image_control_window", p_sub_menu_image_control_window_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
 
 	p_sub_menu_new_->signal_activate().connect(sigc::mem_fun(*this,
@@ -61,6 +64,9 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 
 	p_sub_menu_open_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_open_activate));
+
+	p_sub_menu_image_control_window_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_menu_image_control_window_activate));
 
 	p_sub_menu_about_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_about_activate));
@@ -74,7 +80,7 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	magnolia_about_dialog_.signal_response().connect(sigc::mem_fun(*this, 
 				&MagnoliaMainWindow::on_about_dialog_response));
 
-	show_all_children();
+	show_all_children(); 
 }
 
 void MagnoliaMainWindow::on_sub_menu_new_activate(void)
@@ -141,8 +147,7 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 			img_window->magnolia_image_window->signal_realize();
 			img_window->magnolia_image_window->show();
 
-			//on_sub_menu_new_activate();
-			
+			//on_sub_menu_new_activate(); 
 			break;
 		}
 
@@ -159,6 +164,15 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 		}
 	}
 	
+}
+
+void MagnoliaMainWindow::SetCurrentImageWindow(MagnoliaImageWindow* current_window)
+{
+	current_window_  = current_window; 
+	std::stringstream ss;
+
+	ss << "Set current Window '" << current_window_<< "'";
+	std::cout << ss.str() << std::endl;
 }
 
 void MagnoliaMainWindow::on_sub_menu_about_activate(void)
@@ -193,11 +207,56 @@ void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 	delete img_window; 
 }
 
-void MagnoliaMainWindow::SetCurrentImageWindow(MagnoliaImageWindow* current_window)
+
+void MagnoliaMainWindow::on_sub_menu_image_control_window_activate(void)
 {
-	current_window_  = current_window; 
 	std::stringstream ss;
 
-	ss << "Set current Window '" << current_window_<< "'";
+	ss << "on_sub_menu_image_control_window_activate'" <<  "'";
 	std::cout << ss.str() << std::endl;
+	magnolia_control_window_ = new MagnoliaControlWindow;
+	magnolia_control_window_->set_title("Image Control Window");
+	magnolia_control_window_->signal_realize();
+
+	magnolia_control_window_->signal_hide().connect( 
+			sigc::mem_fun(*this, &MagnoliaMainWindow::on_image_control_window_close)) ;
+	magnolia_control_window_->set_transient_for(*this);
+
+	auto refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_file("glade/control_window_ui.glade");
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " <<ex.what() << std::endl;
+		return;
+	}
+
+	refBuilder->get_widget_derived("control_window_ui", magnolia_control_window_);
+
+
+	magnolia_control_window_->show();
+	magnolia_control_window_->present();
+}
+
+
+void MagnoliaMainWindow::on_image_control_window_close()
+{
+	std::stringstream ss;
+
+	ss << "Deleting Image Control Window '" <<  "'";
+	std::cout << ss.str() << std::endl;
+	delete magnolia_control_window_;
+	magnolia_control_window_ = NULL;
 }

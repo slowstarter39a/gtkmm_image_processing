@@ -31,6 +31,7 @@ class MagnoliaControlWindow : public Gtk::Window
 	protected:
 	private:
 		Glib::RefPtr<Gtk::Builder> magnolia_control_ref_glade_;
+		Gtk::Button* p_button_test_ ;
 };
 
 #endif
