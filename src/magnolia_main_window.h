@@ -20,6 +20,7 @@
 
 #include <gtkmm.h>
 #include "magnolia_image_window.h"
+#include "magnolia_control_window.h"
 
 struct ImageWindowStruct
 {
@@ -43,16 +44,20 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::MenuBar *p_main_menu_bar_;
 		Gtk::ImageMenuItem *p_sub_menu_new_;
 		Gtk::ImageMenuItem *p_sub_menu_open_;
+		Gtk::MenuItem *p_sub_menu_image_control_window_;
 		Gtk::ImageMenuItem *p_sub_menu_about_;
 		MagnoliaImageWindow *current_window_ = NULL;
+		MagnoliaControlWindow *magnolia_control_window_ = NULL;
 
 		std::map<int, ImageWindowStruct*> image_windows_;
 
 		void on_sub_menu_new_activate();
 		void on_sub_menu_open_activate();
 		void on_sub_menu_about_activate();
+		void on_sub_menu_image_control_window_activate();
 		void on_about_dialog_response(int response_id);
 		void on_image_window_close(ImageWindowStruct *image_window);
+		void on_image_control_window_close();
 		
 };
 

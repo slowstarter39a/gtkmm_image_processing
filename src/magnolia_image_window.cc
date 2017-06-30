@@ -16,8 +16,8 @@
  * =====================================================================================
  */
 
-#include "magnolia_image_window.h"
 #include <iostream>
+#include "magnolia_image_window.h"
 #include "magnolia_main_window.h"
 
 using namespace std;
