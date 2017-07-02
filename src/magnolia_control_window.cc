@@ -4,14 +4,7 @@
  *       Filename:  magnolia_control_window.cc
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  06/27/2017 11:00:00 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *      This file is a magnolia control window source file
  *
  * =====================================================================================
  */
@@ -65,8 +58,17 @@ MagnoliaControlWindow::MagnoliaControlWindow(BaseObjectType* cobject, const Glib
 				&MagnoliaMainWindow::on_about_dialog_response));
 
 #endif
-	p_button_test_->show();
+
+
 	show_all_children();
+
+	p_button_test_->signal_clicked().connect(sigc::mem_fun(*this,
+				&MagnoliaControlWindow::on_test));
 
 }
 
+
+void MagnoliaControlWindow::on_test()
+{
+	std::cout<<"p_button_test_"<<endl;
+}

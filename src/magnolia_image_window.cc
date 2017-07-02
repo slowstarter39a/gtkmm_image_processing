@@ -4,14 +4,7 @@
  *       Filename:  magnolia_image_window.cc
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  06/03/2017 10:58:16 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *      This file is a magnolia image window source file
  *
  * =====================================================================================
  */
@@ -51,11 +44,15 @@ MagnoliaImageWindow::MagnoliaImageWindow(std::string filename)
 	Gdk::RGBA color;
 	color.set_rgba(0.9294, 0.9921, 1.0, 3.0);
 	img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
-	img_list->frame->add(*(img_list->image));
-
+	img_list->frame->add(*(img_list->eventbox));
+	img_list->eventbox->add(*(img_list->image));
+	img_list->image_id = image_cnt;
 	fixed_->add(*(img_list->frame));
-	img_list->image->show();
-	img_list->frame->show();
+
+	img_list->eventbox->set_events(Gdk::BUTTON_PRESS_MASK);
+	img_list->eventbox->signal_button_press_event().connect(sigc::bind<int>
+			(sigc::mem_fun(*this, &MagnoliaImageWindow::on_eventbox_button_press), img_list->image_id));
+
 
 	image_list_[image_cnt++] = img_list;
 
@@ -106,4 +103,10 @@ bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
 	magnolia_parent->SetCurrentImageWindow(this); 
 
 	return 1;
+}
+
+bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *, int image_id) 
+{
+	std::cout<<"on_eventbox_button_press "<<image_id<<endl;
+
 }

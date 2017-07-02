@@ -1,20 +1,30 @@
 /*
+Copyright 2017 slowstarter80
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/*
  * =====================================================================================
  *
- *       Filename:  main.cc
+ *	 Filename:  main.cc
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  05/27/2017 09:57:16 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *    	This file is a main.cc of magnolia
  *
  * =====================================================================================
  */
+
 
 #include <gtkmm.h>
 #include "magnolia_main_window.h"
