@@ -4,14 +4,7 @@
  *       Filename:  magnolia_image_window.h
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  06/03/2017 10:56:13 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *      This file is a magnolia image window header file
  *
  * =====================================================================================
  */
@@ -36,8 +29,8 @@ class MagnoliaImageWindow :public Gtk::Window
 		MagnoliaImageWindow();
 		MagnoliaImageWindow(std::string filename);
 		virtual ~MagnoliaImageWindow();
+		bool on_eventbox_button_press(GdkEventButton *, int image_id);
 		virtual void on_show();
-		//virtual void on_state_changed(Gtk::StateType previous_state);
 		virtual bool on_focus_in_event(GdkEventFocus* focus_event);
 	private:
 		int image_cnt = 0;

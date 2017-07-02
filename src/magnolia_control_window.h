@@ -4,14 +4,7 @@
  *       Filename:  magnolia_control_window.h
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  06/27/2017 11:00:14 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *      This file is a magnolia control window header file
  *
  * =====================================================================================
  */
@@ -27,6 +20,7 @@ class MagnoliaControlWindow : public Gtk::Window
 		MagnoliaControlWindow();
 		MagnoliaControlWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
 		virtual ~MagnoliaControlWindow();
+		void on_test();
 
 	protected:
 	private:

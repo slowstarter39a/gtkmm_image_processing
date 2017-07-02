@@ -4,14 +4,7 @@
  *       Filename:  magnolia_main_window.cc
  *
  *    Description:  
- *
- *        Version:  1.0
- *        Created:  06/01/2017 10:16:58 PM
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *      This file is a magnolia main window source file
  *
  * =====================================================================================
  */
