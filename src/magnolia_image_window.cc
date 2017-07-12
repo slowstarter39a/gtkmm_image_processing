@@ -42,7 +42,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(std::string filename)
 	img_list->image->set(filename);
 
 	Gdk::RGBA color;
-	color.set_rgba(0.9294, 0.9921, 1.0, 3.0);
+	color.set_rgba(0.9294, 0.9921, 1.0,1.0);
 	img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
 	img_list->frame->add(*(img_list->eventbox));
 	img_list->eventbox->add(*(img_list->image));
@@ -51,10 +51,11 @@ MagnoliaImageWindow::MagnoliaImageWindow(std::string filename)
 
 	img_list->eventbox->set_events(Gdk::BUTTON_PRESS_MASK);
 	img_list->eventbox->signal_button_press_event().connect(sigc::bind<int>
-			(sigc::mem_fun(*this, &MagnoliaImageWindow::on_eventbox_button_press), img_list->image_id));
+			(sigc::mem_fun(*this, &MagnoliaImageWindow::OnEventBoxButtonPress), img_list->image_id));
 
 
 	image_list_[image_cnt++] = img_list;
+	current_img_list_struct_ = img_list;
 
 	show_all_children();
 }
@@ -82,7 +83,7 @@ MagnoliaImageWindow::~MagnoliaImageWindow()
 
 }
 
-void MagnoliaImageWindow::on_show()
+void MagnoliaImageWindow::OnShow()
 {
 	Gtk::Window::on_show();
 
@@ -94,19 +95,43 @@ void MagnoliaImageWindow::on_show()
 }
 
 
-bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
+bool MagnoliaImageWindow::OnFocusInEvent(GdkEventFocus* focus_event)
 {
-	std::cout<<"on_focus_in_event"<<endl;
+	std::cout<<"OnFocusInEvent"<<endl;
 
 	Gtk::Window *parent = get_transient_for();
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
+	std::cout<<"parent "<<parent<<endl;
+	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
 	magnolia_parent->SetCurrentImageWindow(this); 
 
 	return 1;
 }
 
-bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *, int image_id) 
+bool MagnoliaImageWindow::OnEventBoxButtonPress(GdkEventButton *, int image_id) 
 {
-	std::cout<<"on_eventbox_button_press "<<image_id<<endl;
+	std::cout<<"OnEventBoxButtonPress "<<image_id<<endl;
 
+	std::map<int, ImageListStruct*>::iterator iter;
+	ImageListStruct *img_list = NULL;
+	Gdk::RGBA color;
+	
+	for(iter = image_list_.begin(); iter != image_list_.end(); iter++){
+		img_list = iter->second;
+
+		if(img_list->image_id == image_id) {
+			color.set_rgba(0.9294, 0.9921, 1.0, 3.0);
+			current_img_list_struct_ = img_list;
+		}
+		else {
+			color.set_rgba(0.8554, 0.8554, 0.8554, 1.0);
+		}
+
+		img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL); 
+	} 
+}
+
+Glib::RefPtr<Gdk::Pixbuf> MagnoliaImageWindow::GetCurrentImagePixbuf()
+{
+	return current_img_list_struct_->image->get_pixbuf();
 }

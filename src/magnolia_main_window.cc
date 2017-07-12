@@ -53,16 +53,16 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
 
 	p_sub_menu_new_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_sub_menu_new_activate));
+				&MagnoliaMainWindow::OnSubmenuNewActivate));
 
 	p_sub_menu_open_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_sub_menu_open_activate));
+				&MagnoliaMainWindow::OnSubmenuOpenActivate));
 
 	p_sub_menu_image_control_window_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_sub_menu_image_control_window_activate));
+				&MagnoliaMainWindow::OnSubmenuImageControlWindowActivate));
 
 	p_sub_menu_about_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_sub_menu_about_activate));
+				&MagnoliaMainWindow::OnSubmenuAboutActivate));
 
 	magnolia_about_dialog_.set_transient_for(*this);
 	magnolia_about_dialog_.set_program_name("Magnolia");
@@ -71,22 +71,22 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	magnolia_about_dialog_.set_comments("This is Magnolia application");
 	magnolia_about_dialog_.set_license("LGPL");
 	magnolia_about_dialog_.signal_response().connect(sigc::mem_fun(*this, 
-				&MagnoliaMainWindow::on_about_dialog_response));
+				&MagnoliaMainWindow::OnAboutDialogResponse));
 
 	show_all_children(); 
 }
 
-void MagnoliaMainWindow::on_sub_menu_new_activate(void)
+void MagnoliaMainWindow::OnSubmenuNewActivate(void)
 {
 	//MagnoliaImageWindow magnolia_image_window;
 	//magnolia_image_window_.set_title("Magnolia Image window");
 	//magnolia_image_window_.show();
 	//magnolia_image_window_.set_deletable(false);
 	//magnolia_image_window_.move(400,200);
-	std::cout<<"on_sub_menu_new_activate()"<<std::endl;
+	std::cout<<"OnSubmenuNewActivate()"<<std::endl;
 }
 
-void MagnoliaMainWindow::on_sub_menu_open_activate(void)
+void MagnoliaMainWindow::OnSubmenuOpenActivate(void)
 {
 	Gtk::FileChooserDialog dialog("Please choose a file", 
 			Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -133,14 +133,14 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 			img_window->magnolia_image_window->set_title(filename);
 			img_window->magnolia_image_window->signal_hide().connect( 
 				sigc::bind<ImageWindowStruct*>(sigc::mem_fun(*this, 
-				&MagnoliaMainWindow::on_image_window_close), img_window));
+				&MagnoliaMainWindow::OnImageWindowClose), img_window));
 
 			image_windows_[window_cnt++] = img_window;
 			
 			img_window->magnolia_image_window->signal_realize();
 			img_window->magnolia_image_window->show();
+			current_image_window_  = img_window->magnolia_image_window; 
 
-			//on_sub_menu_new_activate(); 
 			break;
 		}
 
@@ -161,20 +161,20 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 
 void MagnoliaMainWindow::SetCurrentImageWindow(MagnoliaImageWindow* current_window)
 {
-	current_window_  = current_window; 
+	current_image_window_  = current_window; 
 	std::stringstream ss;
 
-	ss << "Set current Window '" << current_window_<< "'";
+	ss << "Set current Window '" << current_image_window_<< "'";
 	std::cout << ss.str() << std::endl;
 }
 
-void MagnoliaMainWindow::on_sub_menu_about_activate(void)
+void MagnoliaMainWindow::OnSubmenuAboutActivate(void)
 {
 	magnolia_about_dialog_.show();
 	magnolia_about_dialog_.present();
 }
 
-void MagnoliaMainWindow::on_about_dialog_response(int response_id)
+void MagnoliaMainWindow::OnAboutDialogResponse(int response_id)
 {
 	switch(response_id)
 	{
@@ -189,7 +189,7 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 	}
 }
 
-void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
+void MagnoliaMainWindow::OnImageWindowClose(ImageWindowStruct *img_window)
 {
 	std::stringstream ss;
 
@@ -201,19 +201,18 @@ void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 }
 
 
-void MagnoliaMainWindow::on_sub_menu_image_control_window_activate(void)
+void MagnoliaMainWindow::OnSubmenuImageControlWindowActivate(void)
 {
 	std::stringstream ss;
 
-	ss << "on_sub_menu_image_control_window_activate'" <<  "'";
+	ss << "OnSubmenuImageControlWindow_activate'" <<  "'";
 	std::cout << ss.str() << std::endl;
 	magnolia_control_window_ = new MagnoliaControlWindow;
 	magnolia_control_window_->set_title("Image Control Window");
 	magnolia_control_window_->signal_realize();
 
 	magnolia_control_window_->signal_hide().connect( 
-			sigc::mem_fun(*this, &MagnoliaMainWindow::on_image_control_window_close)) ;
-	magnolia_control_window_->set_transient_for(*this);
+			sigc::mem_fun(*this, &MagnoliaMainWindow::OnImageControlWindowClose)) ;
 
 	auto refBuilder = Gtk::Builder::create();
 	try
@@ -241,10 +240,11 @@ void MagnoliaMainWindow::on_sub_menu_image_control_window_activate(void)
 
 	magnolia_control_window_->show();
 	magnolia_control_window_->present();
+	magnolia_control_window_->set_transient_for(*this);
 }
 
 
-void MagnoliaMainWindow::on_image_control_window_close()
+void MagnoliaMainWindow::OnImageControlWindowClose()
 {
 	std::stringstream ss;
 
@@ -252,4 +252,10 @@ void MagnoliaMainWindow::on_image_control_window_close()
 	std::cout << ss.str() << std::endl;
 	delete magnolia_control_window_;
 	magnolia_control_window_ = NULL;
+}
+
+MagnoliaImageWindow* MagnoliaMainWindow::GetCurrentImageWindow()
+{
+	std::cout<<"current_image_window_"<<current_image_window_<<endl;
+	return current_image_window_;
 }
