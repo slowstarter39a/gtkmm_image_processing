@@ -20,12 +20,15 @@ class MagnoliaControlWindow : public Gtk::Window
 		MagnoliaControlWindow();
 		MagnoliaControlWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
 		virtual ~MagnoliaControlWindow();
-		void on_test();
+		void OnTest();
+		void OnButtonInverseClicked();
+		Glib::RefPtr<Gdk::Pixbuf> GetCurrentImageBuf();
 
 	protected:
 	private:
 		Glib::RefPtr<Gtk::Builder> magnolia_control_ref_glade_;
 		Gtk::Button* p_button_test_ ;
+		Gtk::Button* p_button_inverse_;
 };
 
 #endif
