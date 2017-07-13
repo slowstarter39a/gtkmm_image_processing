@@ -2,11 +2,18 @@ CC=g++ -std=c++11
 TARGET=magnolia
 CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs`
 
+#ifneq (,$(findstring $*, "eng"))
+ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
+CFLAGS+=-g
+endif
+
 SRCS := $(wildcard src/*.cc)
 INCLUDES := $(wildcard src/*.h)
 OBJS := $(SRCS:.cc=.o)
 
 Q=@echo
+
+eng:all
 
 all: $(TARGET)
 
