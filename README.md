@@ -1,15 +1,27 @@
 # gtkmm_image_processing
-image processing based on gtkmm, opencv
+## image processing based on gtkmm, opencv
 
 1. Compilation
-   $ ./build 
-   or
-   $ ./build all
-
+  * Debug mode compilation
+    ```bash
+    $ ./build eng
+    ```
+  * Release mode compilation
+    ```bash
+    $ ./build
+     ```
+     or
+     ```bash
+     $ ./build all
+     ```
 2. Clean
-   $ ./build clean
+    ```bash
+    $ ./build clean
+    ```
 
-3. Execution
+3. Execution  
+    ```bash
    $ ./magnolia
+   ```
 
  
