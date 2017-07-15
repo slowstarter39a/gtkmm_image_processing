@@ -1,14 +1,13 @@
 CC=g++ -std=c++11
-TARGET=magnolia
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs`
+#TARGET=magnolia
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall
 
-#ifneq (,$(findstring $*, "eng"))
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g
 endif
 
-SRCS := $(wildcard src/*.cc)
-INCLUDES := $(wildcard src/*.h)
+SRCS := $(wildcard $(SRC)/$(GUI)/*.cc)
+INCLUDES := $(wildcard $(SRC)/$(GUI)/*.h)
 OBJS := $(SRCS:.cc=.o)
 
 Q=@echo
@@ -19,7 +18,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(addprefix $(OUT)/,$^) $(CFLAGS)
-	@echo "Compilation complete!"
+	@echo "GUI Compilation complete!"
 
 $(OBJS): %.o : %.cc
 	$(CC) $(CFLAGS) -c $< -o $(OUT)/$@

@@ -129,6 +129,8 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *, int image_i
 
         img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL); 
     } 
+
+    return TRUE;
 }
 
 Glib::RefPtr<Gdk::Pixbuf> MagnoliaImageWindow::get_current_image_pixbuf()

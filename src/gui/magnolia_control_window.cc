@@ -41,11 +41,7 @@ MagnoliaControlWindow::MagnoliaControlWindow(BaseObjectType* cobject, const Glib
 
 void MagnoliaControlWindow::on_test()
 {
-    std::cout<<"p_button_test_"<<endl;
-    Gtk::Window *parent = get_transient_for();
-    MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
-    Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
-
+    std::cout<<"p_button_test_"<<endl; 
 }
 
 void MagnoliaControlWindow::on_button_inverse_clicked()
@@ -57,8 +53,8 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
     Glib::RefPtr<Gdk::Pixbuf> image_read_buf = get_current_image_buf();
     Gdk::Pixbuf & image = *image_read_buf.operator->(); // just for convenience
 
-    if ( ! image.get_colorspace() == Gdk::COLORSPACE_RGB ) return;
-    if ( ! image.get_bits_per_sample() == 8 ) return;
+    if (image.get_colorspace() != Gdk::COLORSPACE_RGB ) return;
+    if (image.get_bits_per_sample() != 8 ) return;
 
 
     int iW = image.get_width();
