@@ -1,6 +1,6 @@
 CC=g++ -std=c++11
 #TARGET_LIB=lib_magnolia_image_process
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall -ldl -ldl
 
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g

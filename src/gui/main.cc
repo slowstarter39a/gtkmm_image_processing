@@ -1,11 +1,11 @@
 /*
-Copyright 2017 slowstarter80
+   Copyright 2017 slowstarter80
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,21 +61,6 @@ int main(int argc, char *argv[])
 	refBuilder->get_widget_derived("main_ui", p_window);
 	if(p_window)
 	{
-#if 0
-		Gtk::MenuBar *p_main_menu_bar = nullptr;
-		refBuilder->get_widget("main_menu_bar", p_main_menu_bar);
-
-		Gtk::MenuItem *p_main_menu_files = nullptr;
-		refBuilder->get_widget("main_menu_files", p_main_menu_files);
-
-		Gtk::MenuItem *p_main_menu_help = nullptr;
-		refBuilder->get_widget("main_menu_help", p_main_menu_help);
-
-		Gtk::ImageMenuItem *p_sub_menu_about = nullptr;
-		refBuilder->get_widget("sub_menu_about", p_sub_menu_about);
-
-		p_sub_menu_about->signal_activate().connect(sigc::ptr_fun(on_sub_menu_about_activate));
-#endif
 		app->run(*p_window);
 	}
 

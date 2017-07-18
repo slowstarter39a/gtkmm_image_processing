@@ -2,7 +2,7 @@
 
 export SRC=src
 export TARGET=magnolia
-export TARGET_LIB=image_process_lib
+export TARGET_LIB=image_processing_lib
 export OUT=out
 export GUI=gui
 export LIB=lib
