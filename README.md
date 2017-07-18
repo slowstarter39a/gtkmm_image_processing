@@ -29,6 +29,8 @@
 
 4. Execution  
     ```bash
+   $ export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH    
+      #add path to LD_LIBRARY_PATH to search image_processing_lib.so in current directory
    $ ./magnolia
    ```
 
