@@ -2,7 +2,7 @@
 ## image processing based on gtkmm, opencv
 
 1. Coding convention
-  * use 4 space instead tab
+  * Linux Kernel style. Tabs with a length of 8 characters are used for the indentation
   * method name of class is like below
     * Gtk::Window get_current_image_window();
   * member variable of class is like below
