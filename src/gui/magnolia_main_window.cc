@@ -127,10 +127,10 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 				std::string filename = dialog.get_filename();
 				std::cout<<"File selected: " <<filename <<std::endl;
 				ImageWindowStruct *img_window = new ImageWindowStruct;
-				img_window->magnolia_image_window = new MagnoliaImageWindow(filename);
+				img_window->magnolia_image_window = new MagnoliaImageWindow(this, filename);
 				img_window->window_id = window_cnt;
 
-				img_window->magnolia_image_window->set_transient_for(*this);
+				//img_window->magnolia_image_window->set_transient_for(*this);
 
 				std::stringstream ss;
 				ss << "New image window '" << window_cnt << "'";
@@ -211,7 +211,7 @@ void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 
 	ss << "on_submenu_image_control_window_activate'" <<  "'";
 	std::cout << ss.str() << std::endl;
-	magnolia_control_window_ = new MagnoliaControlWindow;
+	magnolia_control_window_ = new MagnoliaControlWindow();
 	magnolia_control_window_->set_title("Image Control Window");
 	magnolia_control_window_->signal_realize();
 
@@ -241,10 +241,11 @@ void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 
 	refBuilder->get_widget_derived("control_window_ui", magnolia_control_window_);
 
+	magnolia_control_window_->set_parent_window(this);   //add to know parent window in magnolia_contro_window_
 
 	magnolia_control_window_->show();
 	magnolia_control_window_->present();
-	magnolia_control_window_->set_transient_for(*this);
+	//magnolia_control_window_->set_transient_for(*this);
 }
 
 void MagnoliaMainWindow::on_submenu_use_opencv_lib_activate(void)

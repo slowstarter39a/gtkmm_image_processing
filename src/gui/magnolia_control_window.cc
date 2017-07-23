@@ -52,6 +52,16 @@ MagnoliaControlWindow::MagnoliaControlWindow(BaseObjectType* cobject, const Glib
 	show_all_children(); 
 } 
 
+void MagnoliaControlWindow::set_parent_window(Gtk::Window *parent_window)
+{
+	parent_window_ = parent_window;
+}
+
+Gtk::Window* MagnoliaControlWindow::get_parent_window()
+{
+	return parent_window_;
+}
+
 void MagnoliaControlWindow::on_test()
 {
 	std::cout<<"p_button_test_"<<endl; 
@@ -74,8 +84,10 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	pthread_join(p_thread, (void**)&status);
 
 	std::cout<<"on_button_inverse_clicked"<<endl;
-	Gtk::Window *parent = get_transient_for();
-	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
+
+	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
+	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
+
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf = get_current_image_buf();
 	Gdk::Pixbuf & image = *image_read_buf.operator->(); // just for convenience
 
@@ -122,14 +134,12 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
 
 	image_window->queue_draw(); // redraw after modify
-	image_window->present();
-
+	image_window->present(); 
 }
 
 Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 {
-	Gtk::Window *parent = get_transient_for();
-	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
+	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
 	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;

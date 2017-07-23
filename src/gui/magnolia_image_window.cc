@@ -15,17 +15,17 @@
 
 using namespace std;
 
-MagnoliaImageWindow::MagnoliaImageWindow()
+MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window)
 {
 	set_border_width(10);
 	set_default_size(800, 800);
 
 	fixed_ = NULL;
 
-	show_all_children();
-
+	show_all_children(); 
+	parent_window_ = parent_window;
 }
-MagnoliaImageWindow::MagnoliaImageWindow(std::string filename)
+MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string filename)
 {
 	std::cout<<filename<<std::endl;
 	set_border_width(10);
@@ -58,6 +58,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(std::string filename)
 	current_img_list_struct_ = img_list;
 
 	show_all_children();
+	parent_window_ = parent_window;
 }
 
 MagnoliaImageWindow::~MagnoliaImageWindow()
@@ -99,9 +100,7 @@ bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
 {
 	std::cout<<"on_focus_in_event"<<endl;
 
-	Gtk::Window *parent = get_transient_for();
-	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent);
-	std::cout<<"parent "<<parent<<endl;
+	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
 	magnolia_parent->set_current_image_window(this); 
 

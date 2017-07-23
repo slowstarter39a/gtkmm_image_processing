@@ -26,8 +26,8 @@ struct ImageListStruct
 class MagnoliaImageWindow :public Gtk::Window
 {
 	public:
-		MagnoliaImageWindow();
-		MagnoliaImageWindow(std::string filename);
+		MagnoliaImageWindow(Gtk::Window *parent_window);
+		MagnoliaImageWindow(Gtk::Window *parent_window, std::string filename);
 		virtual ~MagnoliaImageWindow();
 		bool on_eventbox_button_press(GdkEventButton *, int image_id);
 		virtual void on_show();
@@ -39,6 +39,7 @@ class MagnoliaImageWindow :public Gtk::Window
 		Gtk::Fixed *fixed_;
 		std::map<int, ImageListStruct*> image_list_;
 		ImageListStruct *current_img_list_struct_;
+		Gtk::Window *parent_window_;
 };
 
 #endif //_MAGNOLIA_IMAGE_WINDOW_H
