@@ -12,6 +12,7 @@
 #ifndef _MAGNOLIA_CONTROL_WINDOW_H
 #define _MAGNOLIA_CONTROL_WINDOW_H 
 
+#include <thread>
 #include <gtkmm.h>
 
 class MagnoliaControlWindow : public Gtk::Window
@@ -32,6 +33,8 @@ class MagnoliaControlWindow : public Gtk::Window
 		Gtk::Button *p_button_test_ ;
 		Gtk::Button *p_button_inverse_;
 		Gtk::Window *parent_window_;
+		mutable std::mutex m_Mutex; 
+		std::thread *worker_thread_;
 };
 
 #endif

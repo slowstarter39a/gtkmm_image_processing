@@ -18,77 +18,16 @@
 
 using namespace std;
 
-void* thread_function(void *data)
+void do_thread_work(MagnoliaImageWindow *image_window)
 {
 	int i = 0;
-	while(i < 10) {
+	while(i < 3) {
 		std::cout<<"i = " <<i<<endl;
 		sleep(1);
 		i++;
 	}
 
-	return nullptr;
-}
-
-MagnoliaControlWindow::MagnoliaControlWindow()
-{ 
-}
-
-MagnoliaControlWindow::~MagnoliaControlWindow()
-{
-
-}
-
-MagnoliaControlWindow::MagnoliaControlWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
-	: Gtk::Window(cobject),
-	magnolia_control_ref_glade_(refGlade)
-{
-	magnolia_control_ref_glade_->get_widget("id_button_test", p_button_test_);
-	magnolia_control_ref_glade_->get_widget("id_button_inverse", p_button_inverse_);
-
-	p_button_test_->signal_clicked().connect(sigc::mem_fun(*this, &MagnoliaControlWindow::on_test));
-	p_button_inverse_->signal_clicked().connect(sigc::mem_fun(*this, &MagnoliaControlWindow::on_button_inverse_clicked)); 
-
-	show_all_children(); 
-} 
-
-void MagnoliaControlWindow::set_parent_window(Gtk::Window *parent_window)
-{
-	parent_window_ = parent_window;
-}
-
-Gtk::Window* MagnoliaControlWindow::get_parent_window()
-{
-	return parent_window_;
-}
-
-void MagnoliaControlWindow::on_test()
-{
-	std::cout<<"p_button_test_"<<endl; 
-}
-
-void MagnoliaControlWindow::on_button_inverse_clicked()
-{
-	//Todo Should modify this function
-	pthread_t p_thread ;
-	int thread_id = 0;
-	int status = 0;
-
-	thread_id = pthread_create(&p_thread, NULL, thread_function, NULL);
-	if(thread_id < 0)
-	{
-		perror("thread create error :"); 
-		return;
-	}
-
-	pthread_join(p_thread, (void**)&status);
-
-	std::cout<<"on_button_inverse_clicked"<<endl;
-
-	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
-	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
-
-	Glib::RefPtr<Gdk::Pixbuf> image_read_buf = get_current_image_buf();
+	Glib::RefPtr<Gdk::Pixbuf> image_read_buf =  image_window->get_current_image_pixbuf();
 	Gdk::Pixbuf & image = *image_read_buf.operator->(); // just for convenience
 
 	if (image.get_colorspace() != Gdk::COLORSPACE_RGB ) return;
@@ -131,10 +70,79 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	}
 
 
-	MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
+	//MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
 
 	image_window->queue_draw(); // redraw after modify
 	image_window->present(); 
+
+
+	return;
+	//return nullptr;
+
+}
+
+MagnoliaControlWindow::MagnoliaControlWindow()
+{ 
+	worker_thread_ = NULL;
+}
+
+MagnoliaControlWindow::~MagnoliaControlWindow()
+{
+
+}
+
+MagnoliaControlWindow::MagnoliaControlWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
+	: Gtk::Window(cobject),
+	magnolia_control_ref_glade_(refGlade)
+{
+	magnolia_control_ref_glade_->get_widget("id_button_test", p_button_test_);
+	magnolia_control_ref_glade_->get_widget("id_button_inverse", p_button_inverse_);
+
+	p_button_test_->signal_clicked().connect(sigc::mem_fun(*this, &MagnoliaControlWindow::on_test));
+	p_button_inverse_->signal_clicked().connect(sigc::mem_fun(*this, &MagnoliaControlWindow::on_button_inverse_clicked)); 
+
+	show_all_children(); 
+	worker_thread_ = NULL;
+} 
+
+void MagnoliaControlWindow::set_parent_window(Gtk::Window *parent_window)
+{
+	parent_window_ = parent_window;
+}
+
+Gtk::Window* MagnoliaControlWindow::get_parent_window()
+{
+	return parent_window_;
+}
+
+void MagnoliaControlWindow::on_test()
+{
+	std::cout<<"p_button_test_"<<endl; 
+}
+
+void MagnoliaControlWindow::on_button_inverse_clicked()
+{
+	std::cout<<"on_button_inverse_clicked"<<endl;
+
+	if(worker_thread_)
+	{
+		std::cout<<"Can't start a worker thread while another one is running."<<std::endl;
+		return;
+	}
+	
+	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
+	MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
+
+	worker_thread_ = new std::thread(do_thread_work, image_window);
+	if(!worker_thread_)
+	{
+		std::cout<<"creating worker_thread_ failed"<<endl;
+		return;
+	}
+	worker_thread_->join();
+
+	delete worker_thread_;
+	worker_thread_ = NULL;
 }
 
 Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
