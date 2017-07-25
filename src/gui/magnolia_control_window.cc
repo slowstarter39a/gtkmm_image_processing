@@ -14,11 +14,12 @@
 #include "magnolia_control_window.h"
 #include "magnolia_image_window.h"
 #include "magnolia_main_window.h"
-#include "../lib/image_processing_main.h"
+#include "image_processing_main.h"
+#include "magnolia_common_data.h"
 
 using namespace std;
 
-void do_thread_work(MagnoliaImageWindow *image_window)
+void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cmd_type *cmd)
 {
 	int i = 0;
 	while(i < 3) {
@@ -27,11 +28,15 @@ void do_thread_work(MagnoliaImageWindow *image_window)
 		i++;
 	}
 
-	Glib::RefPtr<Gdk::Pixbuf> image_read_buf =  image_window->get_current_image_pixbuf();
-	Gdk::Pixbuf & image = *image_read_buf.operator->(); // just for convenience
+	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_current_image_pixbuf();
+	Gdk::Pixbuf &src_img= *image_src_buf.operator->(); // just for convenience
 
-	if (image.get_colorspace() != Gdk::COLORSPACE_RGB ) return;
-	if (image.get_bits_per_sample() != 8 ) return;
+	Gtk::Image *destination_image= new Gtk::Image;
+	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = destination_image->get_pixbuf();
+	Gdk::Pixbuf  &dst_img = *image_dst_buf.operator->();
+
+	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return;
+	if (src_img.get_bits_per_sample() != 8 ) return;
 
 
 	void *handle;
@@ -42,27 +47,27 @@ void do_thread_work(MagnoliaImageWindow *image_window)
 		std::cout<<dlerror()<<endl;
 		return;
 	}
-	init_t* init_myFunc = (init_t *)dlsym(handle, "lib_test");
+	image_processing_handler_t *fnImageProcessing = (image_processing_handler_t*)dlsym(handle, "ImageProcessingDispatcher");
 	if(dlerror() != NULL)
 	{
-		std::cout<<"Open Library function lib_test failed"<<endl;
+		std::cout<<"Open Library function ImageProcessingDispatcher failed"<<endl;
 		return; 
 	}
-	init_myFunc(1)->lib_func();
+	fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
 
-	int iW = image.get_width();
-	int iH = image.get_height();
-	guchar * pPixels = image.get_pixels();
-	int iNChannels = image.get_n_channels();
+	int iW = src_img.get_width();
+	int iH = src_img.get_height();
+	guchar * pPixels = src_img.get_pixels();
+	int iNChannels = src_img.get_n_channels();
 
-	int rowstride = image.get_rowstride();
+	int rowstride = src_img.get_rowstride();
 	std::cout<<"rowstride"<<rowstride<<endl;
 	std::cout<<"iNChannels"<<iNChannels<<endl;
 
 	for (int iY = 0; iY < iH; iY++) {
 		for (int iX = 0; iX < iW; iX++) {
-			int iOffset = iY*image.get_rowstride() + iX*iNChannels;
+			int iOffset = iY*src_img.get_rowstride() + iX*iNChannels;
 			pPixels[iOffset] = 255 - pPixels[iOffset];
 			pPixels[iOffset+1] = 255 - pPixels[iOffset+1];
 			pPixels[iOffset+2] = 255 - pPixels[iOffset+2];
@@ -133,7 +138,12 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 	MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
 
-	worker_thread_ = new std::thread(do_thread_work, image_window);
+	magnolia_cmd_type cmd;
+	cmd.mag_cmd = MAGNOLIA_CMD_INVERSE;
+
+	int lib_type = magnolia_parent->get_check_menu_use_opencv_lib();
+
+	worker_thread_ = new std::thread(do_thread_work, image_window, lib_type, &cmd);
 	if(!worker_thread_)
 	{
 		std::cout<<"creating worker_thread_ failed"<<endl;

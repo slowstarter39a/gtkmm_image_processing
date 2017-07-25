@@ -18,6 +18,9 @@ limitations under the License.
 #define _IMAGE_PROCESSING_MAIN_H 
 
 #include <gtkmm.h>
+#include <gdkmm/rgba.h>
+#include <gtkmm/grid.h>
+#include "magnolia_common_data.h"
 
 class ImageProcessingMain
 {
@@ -29,6 +32,6 @@ class ImageProcessingMain
 
 };
 
-typedef ImageProcessingMain* init_t(int);
+typedef ImageProcessingMain* image_processing_handler_t(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 
 #endif //_IMAGE_PROCESSING_MAIN_H 

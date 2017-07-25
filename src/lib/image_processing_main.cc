@@ -22,20 +22,20 @@ limitations under the License.
 using namespace std;
 
 
-extern "C" class ImageProcessingMain* lib_test(int a);
+extern "C" class ImageProcessingMain* ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 
-class ImageProcessingMain* lib_test(int a)
+class ImageProcessingMain* ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
 	cout<<"Hello world!"<<endl;
-	cout<<"ImageProcessingMain lib_test! "<<a<< " "<<endl;
+	cout<<"ImageProcessingMain ImageProcessingDispatcher! "<<lib_type<< " "<<endl;
 
-	if(a == 1)
+	if(lib_type == 1)
 	{
 		ImageProcessingMagnolia *my_magnolia_lib;
 		my_magnolia_lib = new ImageProcessingMagnolia;
 		return my_magnolia_lib;
 	}
-	else if(a == 2)
+	else if(lib_type == 2)
 	{
 		ImageProcessingOpenCv *my_opencv_lib;
 		my_opencv_lib = new ImageProcessingOpenCv;

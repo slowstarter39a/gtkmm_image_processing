@@ -271,3 +271,8 @@ MagnoliaImageWindow* MagnoliaMainWindow::get_current_image_window()
 	std::cout<<"current_image_window_"<<current_image_window_<<endl;
 	return current_image_window_;
 }
+
+int MagnoliaMainWindow::get_check_menu_use_opencv_lib()
+{
+	return p_sub_menu_use_opencv_lib_->get_active();
+}

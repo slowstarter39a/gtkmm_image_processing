@@ -29,6 +29,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		virtual ~MagnoliaMainWindow();
 		virtual void set_current_image_window(MagnoliaImageWindow* current_window);
 		MagnoliaImageWindow* get_current_image_window();
+		int get_check_menu_use_opencv_lib();
 
 	protected:
 	private:

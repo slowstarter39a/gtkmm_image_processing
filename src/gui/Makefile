@@ -1,6 +1,6 @@
 CC=g++ -std=c++11
 #TARGET=magnolia
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall -I$(SRC)/$(COMMON) -I$(SRC)/$(LIB)
 
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g
