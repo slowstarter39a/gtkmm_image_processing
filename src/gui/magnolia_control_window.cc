@@ -21,23 +21,16 @@ using namespace std;
 
 void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cmd_type *cmd)
 {
-	int i = 0;
-	while(i < 3) {
-		std::cout<<"i = " <<i<<endl;
-		sleep(1);
-		i++;
-	}
+	int result = FAILURE;
 
-	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_current_image_pixbuf();
+	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_src_image_pixbuf();
 	Gdk::Pixbuf &src_img= *image_src_buf.operator->(); // just for convenience
 
-	Gtk::Image *destination_image= new Gtk::Image;
-	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = destination_image->get_pixbuf();
-	Gdk::Pixbuf  &dst_img = *image_dst_buf.operator->();
-
-	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return;
-	if (src_img.get_bits_per_sample() != 8 ) return;
-
+//	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = image_window->get_dst_image_pixbuf();
+//	Gdk::Pixbuf  &dst_img = *image_dst_buf.operator->();
+	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = Gdk::Pixbuf::create(src_img.get_colorspace(), src_img.get_has_alpha(), src_img.get_bits_per_sample(),
+			src_img.get_width(), src_img.get_height());
+	Gdk::Pixbuf &dst_img = *image_dst_buf.operator->();
 
 	void *handle;
 	handle = dlopen("image_processing_lib.so", RTLD_LAZY);
@@ -53,37 +46,18 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 		std::cout<<"Open Library function ImageProcessingDispatcher failed"<<endl;
 		return; 
 	}
-	fnImageProcessing(lib_type, cmd, src_img, dst_img);
+	result = fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
+	std::cout<<"result of fnImageProcessing " <<result<<endl;
 
-	int iW = src_img.get_width();
-	int iH = src_img.get_height();
-	guchar * pPixels = src_img.get_pixels();
-	int iNChannels = src_img.get_n_channels();
+	if(!result)
+	{
+		image_window->show_dst_image(image_dst_buf);
 
-	int rowstride = src_img.get_rowstride();
-	std::cout<<"rowstride"<<rowstride<<endl;
-	std::cout<<"iNChannels"<<iNChannels<<endl;
+		image_window->queue_draw(); // redraw after modify
+		image_window->present(); 
 
-	for (int iY = 0; iY < iH; iY++) {
-		for (int iX = 0; iX < iW; iX++) {
-			int iOffset = iY*src_img.get_rowstride() + iX*iNChannels;
-			pPixels[iOffset] = 255 - pPixels[iOffset];
-			pPixels[iOffset+1] = 255 - pPixels[iOffset+1];
-			pPixels[iOffset+2] = 255 - pPixels[iOffset+2];
-		}
 	}
-
-
-	//MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
-
-	image_window->queue_draw(); // redraw after modify
-	image_window->present(); 
-
-
-	return;
-	//return nullptr;
-
 }
 
 MagnoliaControlWindow::MagnoliaControlWindow()
@@ -162,7 +136,8 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
 	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
 	std::cout<<"get_current_image_window() "<<magnolia_parent->get_current_image_window()<<endl;
-	image_read_buf = magnolia_parent->get_current_image_window()->get_current_image_pixbuf();
+	image_read_buf = magnolia_parent->get_current_image_window()->get_src_image_pixbuf();
 	return image_read_buf;
 
 }
+

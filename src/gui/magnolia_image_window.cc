@@ -37,6 +37,10 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string
 	img_list->image = new Gtk::Image;
 	//std::map<int, ImageListStruct*> image_list_;
 	fixed_ = new Gtk::Fixed;
+
+	if(!img_list || !img_list->frame || !img_list->eventbox || !img_list->image || !fixed_)
+		return;
+
 	add(*fixed_);
 
 	img_list->image->set(filename);
@@ -89,8 +93,10 @@ void MagnoliaImageWindow::on_show()
 	Gtk::Window::on_show();
 
 	if (image_list_.size()) {
-		image_list_[0]->frame->set_size_request(image_list_[0]->image->get_width()+10,
-				image_list_[0]->image->get_height()+10);
+		current_img_list_struct_->frame->set_size_request(current_img_list_struct_->image->get_width() + 10, 
+				current_img_list_struct_->image->get_height() + 10);
+//		image_list_[0]->frame->set_size_request(image_list_[0]->image->get_width()+10,
+//				image_list_[0]->image->get_height()+10);
 	}
 
 }
@@ -123,7 +129,7 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *, int image_i
 			current_img_list_struct_ = img_list;
 		}
 		else {
-			color.set_rgba(0.8554, 0.8554, 0.8554, 1.0);
+			color.set_rgba(0.8588, 0.8588, 0.8588, 1.0);
 		}
 
 		img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL); 
@@ -132,7 +138,38 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *, int image_i
 	return TRUE;
 }
 
-Glib::RefPtr<Gdk::Pixbuf> MagnoliaImageWindow::get_current_image_pixbuf()
+Glib::RefPtr<Gdk::Pixbuf> MagnoliaImageWindow::get_src_image_pixbuf()
 {
 	return current_img_list_struct_->image->get_pixbuf();
+}
+
+void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf)
+{ 
+	ImageListStruct *img_list = new ImageListStruct;
+	img_list->frame = new Gtk::Frame;
+	img_list->eventbox = new Gtk::EventBox;
+	img_list->image= new Gtk::Image;
+	img_list->image->set(dst_buf);
+	//img_list->image= new Gtk::Image;
+
+	if(!img_list || !img_list->frame || !img_list->eventbox || !img_list->image)
+		return;
+
+	Gdk::RGBA color;
+	color.set_rgba(0.8588, 0.8588, 0.8588, 1.0);
+	img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
+	img_list->frame->add(*(img_list->eventbox));
+	img_list->eventbox->add(*(img_list->image));
+	img_list->image_id = image_cnt;
+	fixed_->add(*(img_list->frame));
+
+	img_list->eventbox->set_events(Gdk::BUTTON_PRESS_MASK);
+	img_list->eventbox->signal_button_press_event().connect(sigc::bind<int>
+			(sigc::mem_fun(*this, &MagnoliaImageWindow::on_eventbox_button_press), img_list->image_id));
+
+
+	image_list_[image_cnt++] = img_list;
+	current_img_list_struct_ = img_list;
+
+	show_all_children();
 }

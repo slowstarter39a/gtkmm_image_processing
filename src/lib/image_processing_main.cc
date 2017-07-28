@@ -22,26 +22,40 @@ limitations under the License.
 using namespace std;
 
 
-extern "C" class ImageProcessingMain* ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 
-class ImageProcessingMain* ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
+	int result = FAILURE;
 	cout<<"Hello world!"<<endl;
 	cout<<"ImageProcessingMain ImageProcessingDispatcher! "<<lib_type<< " "<<endl;
 
-	if(lib_type == 1)
+	if(lib_type == 0)
 	{
-		ImageProcessingMagnolia *my_magnolia_lib;
-		my_magnolia_lib = new ImageProcessingMagnolia;
-		return my_magnolia_lib;
+		ImageProcessingMagnolia *magnolia_processing;
+		magnolia_processing= new ImageProcessingMagnolia;
+
+		result  = magnolia_processing->image_processing_handler(cmd, src_img, dst_img); 
+
+		delete magnolia_processing;
+		return result;
 	}
-	else if(lib_type == 2)
+	else if(lib_type == 1)
 	{
-		ImageProcessingOpenCv *my_opencv_lib;
-		my_opencv_lib = new ImageProcessingOpenCv;
-		return my_opencv_lib; 
+		ImageProcessingOpenCv *opencv_processing;
+		opencv_processing= new ImageProcessingOpenCv;
+
+
+		delete opencv_processing;
+
+		return result; 
 	}
 
-	return NULL;
+	return FAILURE;
 }
 
+
+ImageProcessingMain::~ImageProcessingMain()
+{
+
+}

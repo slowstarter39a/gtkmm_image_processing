@@ -17,7 +17,8 @@
 class ImageProcessingMagnolia : public ImageProcessingMain
 {
 	public:
-		virtual int lib_func();
+		virtual ~ImageProcessingMagnolia();
+ 		virtual int image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 	protected:
 	private:
 

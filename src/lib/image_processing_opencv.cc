@@ -14,11 +14,13 @@
 
 using namespace std;
 
-int ImageProcessingOpenCv::lib_func()
-{
-	cout<<"Hello world!"<<endl;
-	cout<<"ImageProcessingOpenCv lib_func!"<<endl;
 
-	return 0;
+ImageProcessingOpenCv::~ImageProcessingOpenCv()
+{
+
 }
 
+int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+{
+	return FAILURE; 
+}

@@ -25,13 +25,15 @@ limitations under the License.
 class ImageProcessingMain
 {
 	public:
-		virtual int lib_func()=0;
+		virtual ~ImageProcessingMain();
+ 		virtual int image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img) = 0;
+
 	protected:
 	private:
 
 
 };
 
-typedef ImageProcessingMain* image_processing_handler_t(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+typedef int image_processing_handler_t(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 
 #endif //_IMAGE_PROCESSING_MAIN_H 

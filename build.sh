@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export SRC=src
 export TARGET=magnolia

@@ -18,7 +18,8 @@
 class ImageProcessingOpenCv: public ImageProcessingMain
 {
 	public:
-		virtual int lib_func();
+		virtual ~ImageProcessingOpenCv();
+ 		virtual int image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 	protected:
 	private:
 

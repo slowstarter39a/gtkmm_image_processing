@@ -10,6 +10,10 @@
  */
 #ifndef _MAGNOLIA_COMMON_DATA_H
 #define _MAGNOLIA_COMMON_DATA_H
+
+#define SUCCESS				0
+#define FAILURE				1
+
 enum magnolia_cmd_enum_type
 {
 	MAGNOLIA_CMD_INVERSE 		= 0,

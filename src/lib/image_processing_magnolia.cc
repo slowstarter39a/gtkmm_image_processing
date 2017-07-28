@@ -13,10 +13,38 @@
 
 using namespace std;
 
-int ImageProcessingMagnolia::lib_func()
+ImageProcessingMagnolia::~ImageProcessingMagnolia()
 {
-	cout<<"Hello world!"<<endl;
-	cout<<"ImageProcessingMagnolia lib_func!"<<endl; 
 
-	return 0;
 }
+
+int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+{
+	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return FAILURE;
+	if (src_img.get_bits_per_sample() != 8 ) return FAILURE;
+
+	int width= src_img.get_width();
+	int height= src_img.get_height();
+	int offset = 0;
+	guchar * src_pixels= src_img.get_pixels();
+	guchar * dst_pixels= dst_img.get_pixels();
+
+	int src_n_channels= src_img.get_n_channels(); 
+	int src_row_stride = src_img.get_rowstride();
+	std::cout<<"rowstride"<<src_row_stride<<endl;
+	std::cout<<"iNChannels"<<src_n_channels<<endl;
+
+	for (int y = 0; y < height; y++) 
+	{
+		for (int x= 0; x < width; x++) 
+		{
+			offset= y*src_img.get_rowstride() + x * src_n_channels;
+			dst_pixels[offset] = 255 - src_pixels[offset];
+			dst_pixels[offset+1] = 255 - src_pixels[offset+1];
+			dst_pixels[offset+2] = 255 - src_pixels[offset+2];
+		}
+	}
+
+	return SUCCESS;
+}
+

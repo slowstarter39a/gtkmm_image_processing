@@ -32,7 +32,8 @@ class MagnoliaImageWindow :public Gtk::Window
 		bool on_eventbox_button_press(GdkEventButton *, int image_id);
 		virtual void on_show();
 		virtual bool on_focus_in_event(GdkEventFocus* focus_event);
-		Glib::RefPtr<Gdk::Pixbuf> get_current_image_pixbuf();
+		Glib::RefPtr<Gdk::Pixbuf> get_src_image_pixbuf();
+		void show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf);
 
 	private:
 		int image_cnt = 0;
