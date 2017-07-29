@@ -26,10 +26,10 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_src_image_pixbuf();
 	Gdk::Pixbuf &src_img= *image_src_buf.operator->(); // just for convenience
 
-//	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = image_window->get_dst_image_pixbuf();
-//	Gdk::Pixbuf  &dst_img = *image_dst_buf.operator->();
+	int dst_img_width = src_img.get_width();
+	int dst_img_height = src_img.get_height();
 	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = Gdk::Pixbuf::create(src_img.get_colorspace(), src_img.get_has_alpha(), src_img.get_bits_per_sample(),
-			src_img.get_width(), src_img.get_height());
+			dst_img_width, dst_img_height);
 	Gdk::Pixbuf &dst_img = *image_dst_buf.operator->();
 
 	void *handle;
@@ -52,11 +52,7 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 
 	if(!result)
 	{
-		image_window->show_dst_image(image_dst_buf);
-
-		image_window->queue_draw(); // redraw after modify
-		image_window->present(); 
-
+		image_window->show_dst_image(image_dst_buf, dst_img_width, dst_img_height); 
 	}
 }
 
