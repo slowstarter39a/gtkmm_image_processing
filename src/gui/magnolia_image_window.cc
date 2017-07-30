@@ -119,6 +119,9 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *event, int im
 {
 	std::cout<<"on_eventbox_button_press "<<image_id<<endl;
 
+	int frame_x_pos = 0;
+	int frame_y_pos = 0;
+
 	mouse_button_press.x = event->x;
 	mouse_button_press.y = event->y;
 
@@ -132,6 +135,10 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *event, int im
 		if(img_list->image_id == image_id) {
 			color.set_rgba(0.9294, 0.9921, 1.0, 3.0);
 			current_img_list_struct_ = img_list;
+			frame_x_pos = fixed_->child_property_x(*(current_img_list_struct_->frame));
+			frame_y_pos = fixed_->child_property_y(*(current_img_list_struct_->frame)); 
+			fixed_->remove(*img_list->frame);
+			fixed_->put(*img_list->frame, frame_x_pos, frame_y_pos); 
 		}
 		else {
 			color.set_rgba(0.8588, 0.8588, 0.8588, 1.0);
