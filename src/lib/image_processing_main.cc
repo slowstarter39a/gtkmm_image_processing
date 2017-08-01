@@ -45,9 +45,9 @@ int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf 
 		ImageProcessingOpenCv *opencv_processing;
 		opencv_processing= new ImageProcessingOpenCv;
 
+		result = opencv_processing->image_processing_handler(cmd, src_img, dst_img);
 
-		delete opencv_processing;
-
+		delete opencv_processing; 
 		return result; 
 	}
 
