@@ -31,19 +31,28 @@ int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gd
 
 	int src_n_channels= src_img.get_n_channels(); 
 	int src_row_stride = src_img.get_rowstride();
+	bool has_alpah_channel = src_img.get_has_alpha();
 	std::cout<<"rowstride  = "<<src_row_stride<<endl;
 	std::cout<<"iNChannels = "<<src_n_channels<<endl;
 	std::cout<<"height = "<<height<<endl;
 	std::cout<<"width = "<<width<<endl;
+	std::cout<<"get_has_alpha() = "<<has_alpah_channel<<endl;
 
 	for (int y = 0; y < height; y++) 
 	{
 		for (int x = 0; x < width; x++)
 		{
 			offset = y * src_img.get_rowstride() + x * src_n_channels;
-			for (int channel = 0; channel < src_n_channels; channel++) {
-				dst_pixels[offset + channel] = 255 - src_pixels[offset + channel];
+
+			dst_pixels[offset] = 255 - src_pixels[offset];
+			dst_pixels[offset + 1] = 255 - src_pixels[offset + 1];
+			dst_pixels[offset + 2] = 255 - src_pixels[offset + 2];
+
+			//No invert for alpha channel
+			if (has_alpah_channel) {
+				dst_pixels[offset + 3] = src_pixels[offset + 3];
 			}
+
 		}
 	}
 
