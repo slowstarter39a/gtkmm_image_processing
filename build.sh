@@ -11,5 +11,6 @@ CPU_CORE_NUM=`nproc --all`
 
 mkdir -p $OUT/$SRC/$GUI
 mkdir -p $OUT/$SRC/$LIB
+mkdir -p $OUT/$SRC/$COMMON
 make -j$CPU_CORE_NUM $1 
 

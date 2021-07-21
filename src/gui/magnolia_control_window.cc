@@ -16,8 +16,10 @@
 #include "magnolia_main_window.h"
 #include "image_processing_main.h"
 #include "magnolia_common_data.h"
+#include "magnolia_logger.h"
 
 using namespace std;
+static const char *tag = __FILE__;
 
 void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cmd_type *cmd)
 {
@@ -36,23 +38,22 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 	handle = dlopen("image_processing_lib.so", RTLD_LAZY);
 	if(!handle)
 	{
-		std::cout<<"Open Library failed"<<endl;
-		std::cout<<dlerror()<<endl;
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library failed. %s\n", dlerror());
 		return;
 	}
 	image_processing_handler_t *fnImageProcessing = (image_processing_handler_t*)dlsym(handle, "ImageProcessingDispatcher");
 	if(dlerror() != NULL)
 	{
-		std::cout<<"Open Library function ImageProcessingDispatcher failed"<<endl;
-		return; 
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library function ImageProcessingDispatcher failed\n");
+		return;
 	}
 	result = fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
-	std::cout<<"result of fnImageProcessing " <<result<<endl;
-
-	if(!result)
-	{
-		image_window->show_dst_image(image_dst_buf, dst_img_width, dst_img_height); 
+	if(!result) {
+		image_window->show_dst_image(image_dst_buf, dst_img_width, dst_img_height);
+	}
+	else {
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "result of fnImageProcessing = %d\n", result);
 	}
 }
 
@@ -92,16 +93,16 @@ Gtk::Window* MagnoliaControlWindow::get_parent_window()
 
 void MagnoliaControlWindow::on_test()
 {
-	std::cout<<"p_button_test_"<<endl; 
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "p_button_test\n");
 }
 
 void MagnoliaControlWindow::on_button_inverse_clicked()
 {
-	std::cout<<"on_button_inverse_clicked"<<endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "on_button_inverse_clicked\n");
 
 	if(worker_thread_)
 	{
-		std::cout<<"Can't start a worker thread while another one is running."<<std::endl;
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Can't start a worker thread while another one is running.\n");
 		return;
 	}
 	
@@ -116,7 +117,7 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	worker_thread_ = new std::thread(do_thread_work, image_window, lib_type, &cmd);
 	if(!worker_thread_)
 	{
-		std::cout<<"creating worker_thread_ failed"<<endl;
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "creating worker_thread_ failed\n");
 		return;
 	}
 	worker_thread_->join();
@@ -130,8 +131,8 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
-	std::cout<<"magnolia_parent "<<magnolia_parent<<endl;
-	std::cout<<"get_current_image_window() "<<magnolia_parent->get_current_image_window()<<endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "magnolia_parent = %p\n", magnolia_parent);
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "get_current_image_window() = %p\n", magnolia_parent->get_current_image_window());
 	image_read_buf = magnolia_parent->get_current_image_window()->get_src_image_pixbuf();
 	return image_read_buf;
 

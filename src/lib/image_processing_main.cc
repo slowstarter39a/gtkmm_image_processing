@@ -18,8 +18,10 @@ limitations under the License.
 #include "image_processing_main.h"
 #include "image_processing_magnolia.h"
 #include "image_processing_opencv.h"
+#include "magnolia_logger.h"
 
 using namespace std;
+static const char *tag = __FILE__;
 
 
 extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
@@ -27,8 +29,8 @@ extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, G
 int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
 	int result = FAILURE;
-	cout<<"Hello world!"<<endl;
-	cout<<"ImageProcessingMain ImageProcessingDispatcher! "<<lib_type<< " "<<endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Hello world!\n");
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "ImageProcessingMain ImageProcessingDispatcher! lib_type = %d\n", lib_type);
 
 	if(lib_type == 0)
 	{
