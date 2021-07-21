@@ -17,8 +17,8 @@
 
 struct ImageWindowStruct
 {
-	int window_id;
-	MagnoliaImageWindow *magnolia_image_window;
+	int window_id_;
+	MagnoliaImageWindow *magnolia_image_window_;
 };
 
 class MagnoliaMainWindow : public Gtk::Window
@@ -33,7 +33,7 @@ class MagnoliaMainWindow : public Gtk::Window
 
 	protected:
 	private:
-		int window_cnt = 0;
+		int window_cnt_ = 0;
 		Glib::RefPtr<Gtk::Builder> magnolia_main_ref_glade_;
 		Gtk::AboutDialog magnolia_about_dialog_;
 		Gtk::MenuBar *p_main_menu_bar_;

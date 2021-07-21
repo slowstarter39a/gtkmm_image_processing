@@ -11,9 +11,11 @@
 
 #include "magnolia_main_window.h"
 #include "magnolia_image_window.h"
+#include "magnolia_logger.h"
 #include <iostream>
 
 using namespace std;
+static const char *tag = __FILE__;
 
 MagnoliaMainWindow::MagnoliaMainWindow()
 { 
@@ -27,11 +29,9 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 	for(iter = image_windows_.begin(); iter != image_windows_.end(); iter++){
 		img_window = iter->second;
 
-		std::stringstream ss;
-		ss << "Deleting Window '" << iter->first <<"'";
-		std::cout << ss.str() << std::endl;
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", iter->first);
 
-		delete img_window->magnolia_image_window;
+		delete img_window->magnolia_image_window_;
 		delete img_window;
 	}
 
@@ -87,7 +87,7 @@ void MagnoliaMainWindow::on_submenu_new_activate(void)
 	//magnolia_image_window_.show();
 	//magnolia_image_window_.set_deletable(false);
 	//magnolia_image_window_.move(400,200);
-	std::cout<<"on_submenu_new_activate()"<<std::endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
 }
 
 void MagnoliaMainWindow::on_submenu_open_activate(void)
@@ -122,54 +122,46 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 	{
 		case(Gtk::RESPONSE_OK):
 			{
-				std::cout<<"Open clicked."<<std::endl;
+				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open clicked.\n");
 
 				std::string filename = dialog.get_filename();
-				std::cout<<"File selected: " <<filename <<std::endl;
+				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "File selected: %s\n", filename.c_str());
 				ImageWindowStruct *img_window = new ImageWindowStruct;
-				img_window->magnolia_image_window = new MagnoliaImageWindow(this, filename);
-				img_window->window_id = window_cnt;
+				img_window->magnolia_image_window_ = new MagnoliaImageWindow(this, filename);
+				img_window->window_id_ = window_cnt_;
 
-				//img_window->magnolia_image_window->set_transient_for(*this);
-
-				std::stringstream ss;
-				ss << "New image window '" << window_cnt << "'";
-				img_window->magnolia_image_window->set_title(filename);
-				img_window->magnolia_image_window->signal_hide().connect( 
+				img_window->magnolia_image_window_->set_title(filename);
+				img_window->magnolia_image_window_->signal_hide().connect(
 						sigc::bind<ImageWindowStruct*>(sigc::mem_fun(*this, 
 								&MagnoliaMainWindow::on_image_window_close), img_window));
 
-				image_windows_[window_cnt++] = img_window;
+				image_windows_[window_cnt_++] = img_window;
 
-				img_window->magnolia_image_window->signal_realize();
-				img_window->magnolia_image_window->show();
-				current_image_window_  = img_window->magnolia_image_window; 
+				img_window->magnolia_image_window_->signal_realize();
+				img_window->magnolia_image_window_->show();
+				current_image_window_  = img_window->magnolia_image_window_;
 
 				break;
 			}
 
 		case(Gtk::RESPONSE_CANCEL):
 			{
-				std::cout<<"Cancel clicked." <<std::endl;
+				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Cancel clicked.\n");
 				break;
 			}
 
 		default:
 			{
-				std::cout<<"Unexpected button clicked."<<std::endl;
+				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Unexpected button clicked.\n");
 				break;
 			}
 	}
-
 }
 
 void MagnoliaMainWindow::set_current_image_window(MagnoliaImageWindow* current_window)
 {
 	current_image_window_  = current_window; 
-	std::stringstream ss;
-
-	ss << "set current window '" << current_image_window_<< "'";
-	std::cout << ss.str() << std::endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "set current window %p\n", current_image_window_);
 }
 
 void MagnoliaMainWindow::on_submenu_about_activate(void)
@@ -195,22 +187,16 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 
 void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 {
-	std::stringstream ss;
-
-	ss << "Deleting Window '" << img_window->window_id << "'";
-	std::cout << ss.str() << std::endl;
-	image_windows_.erase(img_window->window_id);
-	delete img_window->magnolia_image_window;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", img_window->window_id_);
+	image_windows_.erase(img_window->window_id_);
+	delete img_window->magnolia_image_window_;
 	delete img_window; 
 }
 
 
 void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 {
-	std::stringstream ss;
-
-	ss << "on_submenu_image_control_window_activate'" <<  "'";
-	std::cout << ss.str() << std::endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
 	magnolia_control_window_ = new MagnoliaControlWindow();
 	magnolia_control_window_->set_title("Image Control Window");
 	magnolia_control_window_->signal_realize();
@@ -252,23 +238,19 @@ void MagnoliaMainWindow::on_submenu_use_opencv_lib_activate(void)
 {
 	bool a;
 	a = p_sub_menu_use_opencv_lib_->get_active();
-	std::cout<<a<<endl;
-	;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%d\n", a);
 }
 
 void MagnoliaMainWindow::on_image_control_window_close()
 {
-	std::stringstream ss;
-
-	ss << "Deleting Image Control Window '" <<  "'";
-	std::cout << ss.str() << std::endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
 	delete magnolia_control_window_;
 	magnolia_control_window_ = NULL;
 }
 
 MagnoliaImageWindow* MagnoliaMainWindow::get_current_image_window()
 {
-	std::cout<<"current_image_window_"<<current_image_window_<<endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "current_image_window = %p\n", current_image_window_);
 	return current_image_window_;
 }
 

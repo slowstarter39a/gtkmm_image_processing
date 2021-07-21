@@ -12,8 +12,10 @@
 #include <iostream>
 #include "image_processing_opencv.h"
 #include <opencv2/opencv.hpp>
+#include "magnolia_logger.h"
 
 using namespace std;
+static const char *tag = __FILE__;
 
 
 ImageProcessingOpenCv::~ImageProcessingOpenCv()
@@ -23,7 +25,7 @@ ImageProcessingOpenCv::~ImageProcessingOpenCv()
 
 int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
-	std::cout<<"opencv image_processing_handler()"<<endl;
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "opencv image_processing_handler()\n");
 	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return FAILURE;
 	if (src_img.get_bits_per_sample() != 8 ) return FAILURE;
 

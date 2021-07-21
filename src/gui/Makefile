@@ -7,7 +7,9 @@ CFLAGS+=-g
 endif
 
 SRCS := $(wildcard $(SRC)/$(GUI)/*.cc)
+SRCS += $(wildcard $(SRC)/$(COMMON)/*.cc)
 INCLUDES := $(wildcard $(SRC)/$(GUI)/*.h)
+INCLUDES += $(wildcard $(SRC)/$(COMMON)/*.h)
 OBJS := $(SRCS:.cc=.o)
 
 Q=@echo
@@ -19,6 +21,7 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $(addprefix $(OUT)/,$^) $(CFLAGS)
 	@echo "GUI Compilation complete!"
+	@echo
 
 $(OBJS): %.o : %.cc
 	$(CC) $(CFLAGS) -c $< -o $(OUT)/$@
