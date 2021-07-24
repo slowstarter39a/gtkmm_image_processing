@@ -28,7 +28,6 @@ class MagnoliaLogger {
 		void print_log(const char*function_name, int line, const char *tag_name, log_message_level log_level, const char *str,...);
 		static MagnoliaLogger* get_instance();
 		static void destroy_instance();
-		static int get_aaa();
 
 	private:
 		MagnoliaLogger(); 
