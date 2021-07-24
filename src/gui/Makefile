@@ -21,8 +21,6 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) -o $(PRJ_ROOT)/$@ $(addprefix $(OUT_PATH)/,$^) $(CFLAGS)
-	@echo "GUI Compilation complete!"
-	@echo
 
 $(OBJS): %.o : %.cc
 	$(CC) $(CFLAGS) -c $< -o $(OUT_PATH)/$@

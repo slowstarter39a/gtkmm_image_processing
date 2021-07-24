@@ -22,8 +22,6 @@ all: $(TARGET_LIB)
 $(TARGET_LIB): $(OBJS)
 	$(CC)  $(CFLAGS) -shared -Wl,-soname,$(PRJ_ROOT)/$(TARGET_LIB).so.0 -o $(PRJ_ROOT)/$(TARGET_LIB).so.0.0 $(addprefix $(LIB_OUT_PATH)/,$^)
 	ln -sf $(PRJ_ROOT)/$(TARGET_LIB).so.0.0 $(PRJ_ROOT)/$(TARGET_LIB).so
-	@echo "LIB Compilation complete!"
-	@echo
 
 $(OBJS): %.o : %.cc
 	$(CC) $(CFLAGS) -c $< -o $(LIB_OUT_PATH)/$@ -fPIC
