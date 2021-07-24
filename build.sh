@@ -7,10 +7,10 @@ export OUT=out
 export GUI=gui
 export LIB=lib
 export COMMON=common
-CPU_CORE_NUM=`nproc --all`
+export PRJ_ROOT=`pwd`
+export CPU_CORE_NUM=`nproc --all`
 
 mkdir -p $OUT/$SRC/$GUI
 mkdir -p $OUT/$SRC/$LIB
 mkdir -p $OUT/$SRC/$COMMON
-make -j$CPU_CORE_NUM $1 
-
+make $1

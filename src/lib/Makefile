@@ -1,17 +1,17 @@
 CC=g++ -std=c++11
 #TARGET_LIB=lib_magnolia_image_process
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall -ldl -I$(SRC)/$(COMMON) -I$(SRC)/$(LIB) -I/usr/include/opencv4
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall -ldl -I$(PRJ_ROOT)/$(SRC)/$(COMMON) -I$(PRJ_ROOT)/$(SRC)/$(LIB) -I/usr/include/opencv4
 
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g
 endif
 
-SRCS := $(wildcard $(SRC)/$(LIB)/*.cc)
-SRCS += $(wildcard $(SRC)/$(COMMON)/*.cc)
-INCLUDES := $(wildcard $(SRC)/$(LIB)/*.h)
-INCLUDES := $(wildcard $(SRC)/$(COMMON)/*.h)
+SRCS := $(wildcard *.cc)
+SRCS += $(wildcard ../$(COMMON)/*.cc)
+INCLUDES := $(wildcard *.h)
+INCLUDES += $(wildcard ../$(COMMON)/*.h)
 OBJS := $(SRCS:.cc=.o)
-LIB_OUT=$(OUT)/$(SRC)/$(LIB)
+LIB_OUT_PATH=$(PRJ_ROOT)/$(OUT)/$(SRC)/$(LIB)
 
 Q=@echo
 
@@ -20,12 +20,12 @@ eng:all
 all: $(TARGET_LIB)
 
 $(TARGET_LIB): $(OBJS)
-	$(CC)  $(CFLAGS) -shared -Wl,-soname,$(TARGET_LIB).so.0 -o  $(TARGET_LIB).so.0.0 $(addprefix $(OUT)/,$^) 
-	ln -sf $(TARGET_LIB).so.0.0 $(TARGET_LIB).so
+	$(CC)  $(CFLAGS) -shared -Wl,-soname,$(PRJ_ROOT)/$(TARGET_LIB).so.0 -o $(PRJ_ROOT)/$(TARGET_LIB).so.0.0 $(addprefix $(LIB_OUT_PATH)/,$^)
+	ln -sf $(PRJ_ROOT)/$(TARGET_LIB).so.0.0 $(PRJ_ROOT)/$(TARGET_LIB).so
 	@echo "LIB Compilation complete!"
 	@echo
 
 $(OBJS): %.o : %.cc
-	$(CC) $(CFLAGS) -c $< -o $(OUT)/$@ -fPIC
+	$(CC) $(CFLAGS) -c $< -o $(LIB_OUT_PATH)/$@ -fPIC
 
 

@@ -1,7 +1,7 @@
-include src/gui/Makefile
-include src/lib/Makefile
 
 all:
+	make -C src/gui all -j$(CPU_CORE_NUM)
+	make -C src/lib all -j$(CPU_CORE_NUM)
 
 clean:
 	rm -rf $(OUT)
