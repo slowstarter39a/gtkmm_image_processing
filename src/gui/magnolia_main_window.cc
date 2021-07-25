@@ -26,7 +26,7 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 	std::map<int, ImageWindowStruct*>::iterator iter;
 	ImageWindowStruct *img_window = NULL;
 
-	for(iter = image_windows_.begin(); iter != image_windows_.end(); iter++){
+	for (iter = image_windows_.begin(); iter != image_windows_.end(); iter++){
 		img_window = iter->second;
 
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", iter->first);
@@ -35,10 +35,13 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 		delete img_window;
 	}
 
-	if(magnolia_control_window_) {
+	if (magnolia_control_window_) {
 		delete magnolia_control_window_;
 	}
 
+	if (magnolia_xml_struct_) {
+		delete magnolia_xml_struct_;
+	}
 }
 
 MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)
@@ -78,6 +81,9 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 				&MagnoliaMainWindow::on_about_dialog_response));
 
 	show_all_children(); 
+
+	magnolia_xml_struct_ = new MagnoliaXmlStruct;
+	magnolia_xml_struct_->read_xml();
 }
 
 void MagnoliaMainWindow::on_submenu_new_activate(void)

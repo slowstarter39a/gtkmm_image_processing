@@ -1,6 +1,6 @@
 CC=g++ -std=c++11
 #TARGET=magnolia
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` `xml2-config --cflags --libs` -Wall -I$(PRJ_ROOT)/$(SRC)/$(COMMON) -I$(PRJ_ROOT)/$(SRC)/$(LIB)
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs`  -ldl -ltinyxml2 -Wall -I$(PRJ_ROOT)/$(SRC)/$(COMMON) -I$(PRJ_ROOT)/$(SRC)/$(LIB)
 
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g
