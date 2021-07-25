@@ -14,6 +14,7 @@
 #include <gtkmm.h>
 #include "magnolia_image_window.h"
 #include "magnolia_control_window.h"
+#include "magnolia_xml_struct.h"
 
 struct ImageWindowStruct
 {
@@ -44,6 +45,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::ImageMenuItem *p_sub_menu_about_;
 		MagnoliaImageWindow *current_image_window_ = NULL;
 		MagnoliaControlWindow *magnolia_control_window_ = NULL;
+		MagnoliaXmlStruct *magnolia_xml_struct_ = NULL;
 
 		std::map<int, ImageWindowStruct*> image_windows_;
 
