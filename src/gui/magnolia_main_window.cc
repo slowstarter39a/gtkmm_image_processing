@@ -26,7 +26,7 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 	std::map<int, ImageWindowStruct*>::iterator iter;
 	ImageWindowStruct *img_window = NULL;
 
-	for (iter = image_windows_.begin(); iter != image_windows_.end(); iter++){
+	for (iter = image_windows_.begin(); iter != image_windows_.end(); iter++) {
 		img_window = iter->second;
 
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", iter->first);
@@ -124,9 +124,8 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 
 	int result = dialog.run();
 
-	switch(result)
-	{
-		case(Gtk::RESPONSE_OK):
+	switch (result) {
+		case (Gtk::RESPONSE_OK):
 			{
 				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open clicked.\n");
 
@@ -150,7 +149,7 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 				break;
 			}
 
-		case(Gtk::RESPONSE_CANCEL):
+		case (Gtk::RESPONSE_CANCEL):
 			{
 				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Cancel clicked.\n");
 				break;

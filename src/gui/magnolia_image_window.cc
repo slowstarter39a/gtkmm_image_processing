@@ -23,7 +23,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window)
 	set_default_size(800, 800);
 
 	fixed_ = NULL;
-	memset(&mouse_button_press, 0x0, sizeof(mouse_button_press));
+	memset(&mouse_button_press_, 0x0, sizeof(mouse_button_press_));
 
 	show_all_children(); 
 	parent_window_ = parent_window;
@@ -34,7 +34,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string
 	set_border_width(10);
 	set_default_size(800, 800);
 
-	memset(&mouse_button_press, 0x0, sizeof(mouse_button_press));
+	memset(&mouse_button_press_, 0x0, sizeof(mouse_button_press_));
 
 	ImageListStruct *img_list = new ImageListStruct;
 	img_list->frame = new Gtk::Frame;
@@ -43,7 +43,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string
 	//std::map<int, ImageListStruct*> image_list_;
 	fixed_ = new Gtk::Fixed;
 
-	if(!img_list || !img_list->frame || !img_list->eventbox || !img_list->image || !fixed_)
+	if (!img_list || !img_list->frame || !img_list->eventbox || !img_list->image || !fixed_)
 		return;
 
 	add(*fixed_);
@@ -55,7 +55,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string
 	img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
 	img_list->frame->add(*(img_list->eventbox));
 	img_list->eventbox->add(*(img_list->image));
-	img_list->image_id = image_cnt;
+	img_list->image_id = image_cnt_;
 	fixed_->add(*(img_list->frame));
 
 	img_list->eventbox->set_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON1_MOTION_MASK);
@@ -64,7 +64,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string
 	img_list->eventbox->signal_motion_notify_event().connect(
 			(sigc::mem_fun(*this, &MagnoliaImageWindow::on_eventbox_button_motion_notify)));
 
-	image_list_[image_cnt++] = img_list;
+	image_list_[image_cnt_++] = img_list;
 	current_img_list_struct_ = img_list;
 
 	show_all_children();
@@ -79,7 +79,7 @@ MagnoliaImageWindow::~MagnoliaImageWindow()
 	std::map<int, ImageListStruct*>::iterator iter;
 	ImageListStruct *img_list = NULL;
 
-	for(iter = image_list_.begin(); iter != image_list_.end(); iter++){
+	for (iter = image_list_.begin(); iter != image_list_.end(); iter++){
 		img_list = iter->second;
 
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting List '%d'\n", iter->first);
@@ -122,17 +122,17 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *event, int im
 	int frame_x_pos = 0;
 	int frame_y_pos = 0;
 
-	mouse_button_press.x = event->x;
-	mouse_button_press.y = event->y;
+	mouse_button_press_.x = event->x;
+	mouse_button_press_.y = event->y;
 
 	std::map<int, ImageListStruct*>::iterator iter;
 	ImageListStruct *img_list = NULL;
 	Gdk::RGBA color;
 
-	for(iter = image_list_.begin(); iter != image_list_.end(); iter++){
+	for (iter = image_list_.begin(); iter != image_list_.end(); iter++) {
 		img_list = iter->second;
 
-		if(img_list->image_id == image_id) {
+		if (img_list->image_id == image_id) {
 			color.set_rgba(0.9294, 0.9921, 1.0, 3.0);
 			current_img_list_struct_ = img_list;
 			frame_x_pos = fixed_->child_property_x(*(current_img_list_struct_->frame));
@@ -153,8 +153,8 @@ bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *event, int im
 
 bool MagnoliaImageWindow::on_eventbox_button_motion_notify(GdkEventMotion* event)
 { 
-	int move_x = event->x - mouse_button_press.x;
-	int move_y = event->y - mouse_button_press.y;
+	int move_x = event->x - mouse_button_press_.x;
+	int move_y = event->y - mouse_button_press_.y;
 	int frame_x_pos = fixed_->child_property_x(*(current_img_list_struct_->frame));
 	int frame_y_pos = fixed_->child_property_y(*(current_img_list_struct_->frame)); 
 
@@ -180,7 +180,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, int
 	img_list->image= new Gtk::Image;
 	img_list->image->set(dst_buf);
 
-	if(!img_list || !img_list->frame || !img_list->eventbox || !img_list->image)
+	if (!img_list || !img_list->frame || !img_list->eventbox || !img_list->image)
 		return;
 
 	Gdk::RGBA color;
@@ -188,7 +188,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, int
 	img_list->frame->override_background_color(color, Gtk::STATE_FLAG_NORMAL);
 	img_list->frame->add(*(img_list->eventbox));
 	img_list->eventbox->add(*(img_list->image));
-	img_list->image_id = image_cnt;
+	img_list->image_id = image_cnt_;
 
 	fixed_->put(*(img_list->frame), src_frame_x_pos + src_frame_width, src_frame_y_pos); 
 
@@ -198,7 +198,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, int
 	img_list->eventbox->signal_motion_notify_event().connect(
 			(sigc::mem_fun(*this, &MagnoliaImageWindow::on_eventbox_button_motion_notify)));
 
-	image_list_[image_cnt++] = img_list;
+	image_list_[image_cnt_++] = img_list;
 
 	show_all_children();
 	Gtk::Window::on_show();

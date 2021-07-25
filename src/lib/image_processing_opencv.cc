@@ -34,13 +34,10 @@ int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk:
 	int channel = opencv_src_img.channels();
 
 	guchar * dst_pixels= dst_img.get_pixels();
-	for (int y = 0; y < opencv_src_img.rows; y++) 
-	{
-		for (int x= 0; x < opencv_src_img.cols; x++) 
-		{
+	for (int y = 0; y < opencv_src_img.rows; y++) {
+		for (int x= 0; x < opencv_src_img.cols; x++) {
 			offset = y * opencv_src_img.step.buf[0];
-			for(int ch = 0; ch < channel; ch++)
-			{
+			for(int ch = 0; ch < channel; ch++) {
 				dst_pixels[offset + channel * x + ch] = 255 - opencv_src_img.data[offset + channel * x + ch]; 
 			}
 		}

@@ -30,9 +30,9 @@ class MagnoliaXmlStruct
 		void make_default_xml_if_not_exists();
 
 	private:
-		int log_level;
-		char default_image_path[300];
-		int lib_type;
+		int log_level_;
+		char default_image_path_[300];
+		int lib_type_;
 };
 
 #endif //_MAGNOLIA_XML_STRUCT_H

@@ -32,8 +32,7 @@ int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf 
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Hello world!\n");
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "ImageProcessingMain ImageProcessingDispatcher! lib_type = %d\n", lib_type);
 
-	if(lib_type == 0)
-	{
+	if (lib_type == 0) {
 		ImageProcessingMagnolia *magnolia_processing;
 		magnolia_processing= new ImageProcessingMagnolia;
 
@@ -42,8 +41,7 @@ int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf 
 		delete magnolia_processing;
 		return result;
 	}
-	else if(lib_type == 1)
-	{
+	else if (lib_type == 1) {
 		ImageProcessingOpenCv *opencv_processing;
 		opencv_processing= new ImageProcessingOpenCv;
 

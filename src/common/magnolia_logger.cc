@@ -25,7 +25,7 @@ const char *log_message_level_string[LOG_LEVEL_MAX] = {"ERROR", "WARN", "INFO", 
 
 MagnoliaLogger::MagnoliaLogger() 
 {
-	log_level = LOG_LEVEL_ERROR;
+	log_level_ = LOG_LEVEL_ERROR;
 }
 
 MagnoliaLogger::~MagnoliaLogger()
@@ -55,12 +55,12 @@ void MagnoliaLogger::set_log_level(log_message_level log_level)
 	if (log_level >= LOG_LEVEL_MAX) {
 		return;
 	}
-	this->log_level = log_level;
+	this->log_level_ = log_level;
 }
 
 void MagnoliaLogger::print_log(const char*function_name, int line, const char *tag_name, log_message_level log_level, const char *str, ...)
 {
-	if (this->log_level < log_level) {
+	if (this->log_level_ < log_level) {
 		return;
 	}
 
