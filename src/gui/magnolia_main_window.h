@@ -57,7 +57,6 @@ class MagnoliaMainWindow : public Gtk::Window
 		void on_about_dialog_response(int response_id);
 		void on_image_window_close(ImageWindowStruct *image_window);
 		void on_image_control_window_close();
-
 };
 
 

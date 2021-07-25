@@ -20,9 +20,9 @@ const char *xml_file_name = "magnolia_config.xml";
 
 MagnoliaXmlStruct::MagnoliaXmlStruct()
 {
-	log_level = 0;
-	lib_type = 0;
-	memset(default_image_path, 0, sizeof(default_image_path));
+	log_level_ = 0;
+	lib_type_ = 0;
+	memset(default_image_path_, 0, sizeof(default_image_path_));
 	make_default_xml_if_not_exists();
 }
 
@@ -81,7 +81,7 @@ int MagnoliaXmlStruct::read_xml()
 	if (root_element != NULL) {
 		ptr_element = root_element->FirstChildElement("log_level");
 		if (ptr_element) {
-			log_level = atoi(ptr_element->GetText());
+			log_level_ = atoi(ptr_element->GetText());
 		}
 		else {
 			MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "ptr_element about log_level is NULL\n");
@@ -90,8 +90,8 @@ int MagnoliaXmlStruct::read_xml()
 
 		ptr_element = ptr_element->NextSiblingElement("default_image_path");
 		if (ptr_element) {
-			memset(default_image_path, 0, sizeof(default_image_path));
-			std::snprintf(default_image_path, sizeof(default_image_path), "%s", ptr_element->GetText());
+			memset(default_image_path_, 0, sizeof(default_image_path_));
+			std::snprintf(default_image_path_, sizeof(default_image_path_), "%s", ptr_element->GetText());
 		}
 		else {
 			MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "ptr_element about default_image_path is NULL\n");
@@ -100,7 +100,7 @@ int MagnoliaXmlStruct::read_xml()
 
 		ptr_element = ptr_element->NextSiblingElement("lib_type");
 		if (ptr_element) {
-			lib_type = atoi(ptr_element->GetText());
+			lib_type_ = atoi(ptr_element->GetText());
 		}
 		else {
 			MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "ptr_element about lib_type is NULL\n");
@@ -145,12 +145,12 @@ int MagnoliaXmlStruct::write_xml(const char *name, char *val)
 
 int MagnoliaXmlStruct::get_log_level()
 {
-	return log_level;
+	return log_level_;
 }
 
 void MagnoliaXmlStruct::set_log_level(int log_level)
 {
-	this->log_level = log_level;
+	this->log_level_ = log_level;
 
 	char buf[10] = {0,};
 	std::snprintf(buf, sizeof(buf), "%d", log_level);
@@ -159,24 +159,24 @@ void MagnoliaXmlStruct::set_log_level(int log_level)
 
 char* MagnoliaXmlStruct::get_default_image_path()
 {
-	return default_image_path;
+	return default_image_path_;
 }
 
 void MagnoliaXmlStruct::set_default_image_path(char *img_path)
 {
-	strncpy(default_image_path, img_path, sizeof(default_image_path));
+	strncpy(default_image_path_, img_path, sizeof(default_image_path_));
 
-	write_xml((const char*)"default_image_path", default_image_path);
+	write_xml((const char*)"default_image_path", default_image_path_);
 }
 
 int MagnoliaXmlStruct::get_lib_type()
 {
-	return lib_type;
+	return lib_type_;
 }
 
 void MagnoliaXmlStruct::set_lib_type(int lib_type)
 {
-	this->lib_type = lib_type;
+	this->lib_type_ = lib_type;
 	
 	char buf[10] = {0,};
 	std::snprintf(buf, sizeof(buf), "%d", lib_type);

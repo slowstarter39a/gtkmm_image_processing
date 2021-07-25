@@ -41,10 +41,8 @@ int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gd
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "width= %d\n", width);
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "get_has_alpha() = %d\n", has_alpha_channel);
 
-	for (int y = 0; y < height; y++) 
-	{
-		for (int x = 0; x < width; x++)
-		{
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
 			offset = y * src_img.get_rowstride() + x * src_n_channels;
 
 			dst_pixels[offset] = 255 - src_pixels[offset];
@@ -55,7 +53,6 @@ int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gd
 			if (has_alpha_channel) {
 				dst_pixels[offset + 3] = src_pixels[offset + 3];
 			}
-
 		}
 	}
 

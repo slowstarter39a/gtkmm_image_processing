@@ -43,12 +43,12 @@ class MagnoliaImageWindow :public Gtk::Window
 		bool on_eventbox_button_motion_notify(GdkEventMotion* event);
 
 	private:
-		int image_cnt = 0;
+		int image_cnt_ = 0;
 		Gtk::Fixed *fixed_;
 		std::map<int, ImageListStruct*> image_list_;
 		ImageListStruct *current_img_list_struct_;
 		Gtk::Window *parent_window_;
-		MousePoint mouse_button_press;
+		MousePoint mouse_button_press_;
 };
 
 #endif //_MAGNOLIA_IMAGE_WINDOW_H

@@ -32,7 +32,7 @@ class MagnoliaLogger {
 	private:
 		MagnoliaLogger(); 
 		~MagnoliaLogger();
-		int log_level;
+		int log_level_;
 		static MagnoliaLogger *instance_;
 };
 

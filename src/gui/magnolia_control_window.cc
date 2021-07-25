@@ -36,20 +36,18 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 
 	void *handle;
 	handle = dlopen("image_processing_lib.so", RTLD_LAZY);
-	if(!handle)
-	{
+	if (!handle) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library failed. %s\n", dlerror());
 		return;
 	}
 	image_processing_handler_t *fnImageProcessing = (image_processing_handler_t*)dlsym(handle, "ImageProcessingDispatcher");
-	if(dlerror() != NULL)
-	{
+	if (dlerror() != NULL) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library function ImageProcessingDispatcher failed\n");
 		return;
 	}
 	result = fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
-	if(!result) {
+	if (!result) {
 		image_window->show_dst_image(image_dst_buf, dst_img_width, dst_img_height);
 	}
 	else {
@@ -100,8 +98,7 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 {
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "on_button_inverse_clicked\n");
 
-	if(worker_thread_)
-	{
+	if (worker_thread_) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Can't start a worker thread while another one is running.\n");
 		return;
 	}
@@ -115,8 +112,7 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	int lib_type = magnolia_parent->get_check_menu_use_opencv_lib();
 
 	worker_thread_ = new std::thread(do_thread_work, image_window, lib_type, &cmd);
-	if(!worker_thread_)
-	{
+	if (!worker_thread_) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "creating worker_thread_ failed\n");
 		return;
 	}
@@ -135,6 +131,5 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "get_current_image_window() = %p\n", magnolia_parent->get_current_image_window());
 	image_read_buf = magnolia_parent->get_current_image_window()->get_src_image_pixbuf();
 	return image_read_buf;
-
 }
 
