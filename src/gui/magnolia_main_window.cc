@@ -29,7 +29,7 @@ MagnoliaMainWindow::~MagnoliaMainWindow()
 	for (iter = image_windows_.begin(); iter != image_windows_.end(); iter++) {
 		img_window = iter->second;
 
-		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", iter->first);
+		MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "Deleting Window '%d'\n", iter->first);
 
 		delete img_window->magnolia_image_window_;
 		delete img_window;
@@ -53,7 +53,13 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	magnolia_main_ref_glade_->get_widget("sub_menu_new", p_sub_menu_new_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_open", p_sub_menu_open_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_image_control_window", p_sub_menu_image_control_window_);
-	magnolia_main_ref_glade_->get_widget("sub_menu_use_opencv_lib", p_sub_menu_use_opencv_lib_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_error", p_sub_radio_menu_debug_log_level_error_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_warn", p_sub_radio_menu_debug_log_level_warn_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_info", p_sub_radio_menu_debug_log_level_info_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_debug", p_sub_radio_menu_debug_log_level_debug_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_trace", p_sub_radio_menu_debug_log_level_trace_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_lib_type_gtkmm", p_sub_radio_menu_lib_type_gtkmm_);
+	magnolia_main_ref_glade_->get_widget("sub_radio_menu_lib_type_opencv", p_sub_radio_menu_lib_type_opencv_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
 
 	p_sub_menu_new_->signal_activate().connect(sigc::mem_fun(*this,
@@ -65,8 +71,26 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	p_sub_menu_image_control_window_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_submenu_image_control_window_activate));
 
-	p_sub_menu_use_opencv_lib_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_submenu_use_opencv_lib_activate));
+	p_sub_radio_menu_debug_log_level_error_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
+
+	p_sub_radio_menu_debug_log_level_warn_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
+
+	p_sub_radio_menu_debug_log_level_info_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
+
+	p_sub_radio_menu_debug_log_level_debug_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
+
+	p_sub_radio_menu_debug_log_level_trace_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
+
+	p_sub_radio_menu_lib_type_gtkmm_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_lib_type_set));
+
+	p_sub_radio_menu_lib_type_opencv_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_radio_menu_lib_type_set));
 
 	p_sub_menu_about_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_submenu_about_activate));
@@ -84,6 +108,9 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 
 	magnolia_xml_struct_ = new MagnoliaXmlStruct;
 	magnolia_xml_struct_->read_xml();
+
+	MGNL_SET_LOG_LEVEL(magnolia_xml_struct_->get_log_level());
+	update_ui_memu_items_with_xml_struct();
 }
 
 void MagnoliaMainWindow::on_submenu_new_activate(void)
@@ -93,7 +120,7 @@ void MagnoliaMainWindow::on_submenu_new_activate(void)
 	//magnolia_image_window_.show();
 	//magnolia_image_window_.set_deletable(false);
 	//magnolia_image_window_.move(400,200);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
 }
 
 void MagnoliaMainWindow::on_submenu_open_activate(void)
@@ -127,10 +154,10 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 	switch (result) {
 		case (Gtk::RESPONSE_OK):
 			{
-				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open clicked.\n");
+				MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "Open clicked.\n");
 
 				std::string filename = dialog.get_filename();
-				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "File selected: %s\n", filename.c_str());
+				MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "File selected: %s\n", filename.c_str());
 				ImageWindowStruct *img_window = new ImageWindowStruct;
 				img_window->magnolia_image_window_ = new MagnoliaImageWindow(this, filename);
 				img_window->window_id_ = window_cnt_;
@@ -151,7 +178,7 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 
 		case (Gtk::RESPONSE_CANCEL):
 			{
-				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Cancel clicked.\n");
+				MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "Cancel clicked.\n");
 				break;
 			}
 
@@ -166,7 +193,7 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 void MagnoliaMainWindow::set_current_image_window(MagnoliaImageWindow* current_window)
 {
 	current_image_window_  = current_window; 
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "set current window %p\n", current_image_window_);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "set current window %p\n", current_image_window_);
 }
 
 void MagnoliaMainWindow::on_submenu_about_activate(void)
@@ -192,7 +219,7 @@ void MagnoliaMainWindow::on_about_dialog_response(int response_id)
 
 void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting Window '%d'\n", img_window->window_id_);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "Deleting Window '%d'\n", img_window->window_id_);
 	image_windows_.erase(img_window->window_id_);
 	delete img_window->magnolia_image_window_;
 	delete img_window; 
@@ -201,7 +228,7 @@ void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 
 void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "%s\n", __FUNCTION__);
 	magnolia_control_window_ = new MagnoliaControlWindow();
 	magnolia_control_window_->set_title("Image Control Window");
 	magnolia_control_window_->signal_realize();
@@ -239,27 +266,113 @@ void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 	//magnolia_control_window_->set_transient_for(*this);
 }
 
-void MagnoliaMainWindow::on_submenu_use_opencv_lib_activate(void)
+//When selected radiomenuitem changed, this function called twice.
+void MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set()
 {
-	bool a;
-	a = p_sub_menu_use_opencv_lib_->get_active();
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%d\n", a);
+	static unsigned int debug_log_level_set_call_count = 0;
+	debug_log_level_set_call_count++;
+	int log_level = 0;
+
+	if (debug_log_level_set_call_count % 2) {
+		if (p_sub_radio_menu_debug_log_level_error_->get_active()) {
+			log_level = 0;
+		}
+		else if (p_sub_radio_menu_debug_log_level_warn_->get_active()) {
+			log_level = 1;
+		}
+		else if (p_sub_radio_menu_debug_log_level_info_->get_active()) {
+			log_level = 2;
+		}
+		else if (p_sub_radio_menu_debug_log_level_debug_->get_active()) {
+			log_level = 3;
+		}
+		else if (p_sub_radio_menu_debug_log_level_trace_->get_active()) {
+			log_level = 4;
+		}
+		magnolia_xml_struct_->set_log_level(log_level);
+		MGNL_SET_LOG_LEVEL(magnolia_xml_struct_->get_log_level());
+	}
+}
+
+//When selected radiomenuitem changed, this function called twice.
+void MagnoliaMainWindow::on_sub_radio_menu_lib_type_set()
+{
+	static unsigned int lib_type_set_call_count = 0;
+	lib_type_set_call_count++;
+	int lib_type = 0;
+
+	if (lib_type_set_call_count % 2) {
+		if (p_sub_radio_menu_lib_type_gtkmm_->get_active()) {
+			lib_type = 0;
+		}
+		else if (p_sub_radio_menu_lib_type_opencv_->get_active()) {
+			lib_type = 1;
+		}
+		magnolia_xml_struct_->set_lib_type(lib_type);
+	}
 }
 
 void MagnoliaMainWindow::on_image_control_window_close()
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
 	delete magnolia_control_window_;
 	magnolia_control_window_ = NULL;
 }
 
 MagnoliaImageWindow* MagnoliaMainWindow::get_current_image_window()
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "current_image_window = %p\n", current_image_window_);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "current_image_window = %p\n", current_image_window_);
 	return current_image_window_;
 }
 
-int MagnoliaMainWindow::get_check_menu_use_opencv_lib()
+MagnoliaXmlStruct* MagnoliaMainWindow::get_magnolia_xml_struct()
 {
-	return p_sub_menu_use_opencv_lib_->get_active();
+	return magnolia_xml_struct_;
+}
+
+void MagnoliaMainWindow::update_ui_memu_items_with_xml_struct()
+{
+	int log_level = magnolia_xml_struct_->get_log_level();
+
+	switch (log_level) {
+		case 0:
+			p_sub_radio_menu_debug_log_level_error_->set_active();
+			break;
+
+		case 1:
+			p_sub_radio_menu_debug_log_level_warn_->set_active();
+			break;
+
+		case 2:
+			p_sub_radio_menu_debug_log_level_info_->set_active();
+			break;
+
+		case 3:
+			p_sub_radio_menu_debug_log_level_debug_->set_active();
+			break;
+
+		case 4:
+			p_sub_radio_menu_debug_log_level_trace_->set_active();
+			break;
+
+		default:
+			p_sub_radio_menu_debug_log_level_error_->set_active();
+			break;
+	}
+
+	int lib_type = magnolia_xml_struct_->get_lib_type();
+
+	switch (lib_type) {
+		case 0:
+			p_sub_radio_menu_lib_type_gtkmm_->set_active();
+			break;
+
+		case 1:
+			p_sub_radio_menu_lib_type_opencv_->set_active();
+			break;
+
+		default:
+			p_sub_radio_menu_lib_type_gtkmm_->set_active();
+			break;
+	}
 }

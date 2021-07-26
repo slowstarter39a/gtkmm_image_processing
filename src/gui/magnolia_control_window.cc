@@ -96,7 +96,7 @@ void MagnoliaControlWindow::on_test()
 
 void MagnoliaControlWindow::on_button_inverse_clicked()
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "on_button_inverse_clicked\n");
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "on_button_inverse_clicked\n");
 
 	if (worker_thread_) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Can't start a worker thread while another one is running.\n");
@@ -109,7 +109,7 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	magnolia_cmd_type cmd;
 	cmd.mag_cmd = MAGNOLIA_CMD_INVERSE;
 
-	int lib_type = magnolia_parent->get_check_menu_use_opencv_lib();
+	int lib_type = magnolia_parent->get_magnolia_xml_struct()->get_lib_type();
 
 	worker_thread_ = new std::thread(do_thread_work, image_window, lib_type, &cmd);
 	if (!worker_thread_) {
@@ -127,8 +127,8 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "magnolia_parent = %p\n", magnolia_parent);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "get_current_image_window() = %p\n", magnolia_parent->get_current_image_window());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "magnolia_parent = %p\n", magnolia_parent);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "get_current_image_window() = %p\n", magnolia_parent->get_current_image_window());
 	image_read_buf = magnolia_parent->get_current_image_window()->get_src_image_pixbuf();
 	return image_read_buf;
 }

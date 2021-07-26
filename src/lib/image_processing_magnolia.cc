@@ -35,11 +35,11 @@ int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gd
 	int src_row_stride = src_img.get_rowstride();
 	bool has_alpha_channel = src_img.get_has_alpha();
 
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "rowstride = %d\n", src_row_stride);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "iNChannels= %d\n", src_n_channels);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "height = %d\n", height);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "width= %d\n", width);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "get_has_alpha() = %d\n", has_alpha_channel);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "rowstride = %d\n", src_row_stride);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "iNChannels= %d\n", src_n_channels);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "height = %d\n", height);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "width= %d\n", width);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "get_has_alpha() = %d\n", has_alpha_channel);
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {

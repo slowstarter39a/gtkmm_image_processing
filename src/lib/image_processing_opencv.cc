@@ -25,7 +25,7 @@ ImageProcessingOpenCv::~ImageProcessingOpenCv()
 
 int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "opencv image_processing_handler()\n");
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "opencv image_processing_handler()\n");
 	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return FAILURE;
 	if (src_img.get_bits_per_sample() != 8 ) return FAILURE;
 

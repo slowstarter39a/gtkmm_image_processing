@@ -32,7 +32,7 @@ MagnoliaXmlStruct::~MagnoliaXmlStruct()
 void MagnoliaXmlStruct::make_default_xml_if_not_exists()
 {
 	if (!access(xml_file_name, F_OK)) {
-		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s already exists! Skip creating a default file\n", xml_file_name);
+		MGNL_PRINTF(tag, LOG_LEVEL_INFO, "%s already exists! Skip creating a default file\n", xml_file_name);
 		return;
 	}
 

@@ -30,7 +30,7 @@ class MagnoliaMainWindow : public Gtk::Window
 		virtual ~MagnoliaMainWindow();
 		virtual void set_current_image_window(MagnoliaImageWindow* current_window);
 		MagnoliaImageWindow* get_current_image_window();
-		int get_check_menu_use_opencv_lib();
+		MagnoliaXmlStruct *get_magnolia_xml_struct();
 
 	protected:
 	private:
@@ -41,7 +41,13 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::ImageMenuItem *p_sub_menu_new_;
 		Gtk::ImageMenuItem *p_sub_menu_open_;
 		Gtk::MenuItem *p_sub_menu_image_control_window_;
-		Gtk::CheckMenuItem *p_sub_menu_use_opencv_lib_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_error_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_warn_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_info_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_debug_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_trace_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_lib_type_gtkmm_;
+		Gtk::RadioMenuItem *p_sub_radio_menu_lib_type_opencv_;
 		Gtk::ImageMenuItem *p_sub_menu_about_;
 		MagnoliaImageWindow *current_image_window_ = NULL;
 		MagnoliaControlWindow *magnolia_control_window_ = NULL;
@@ -53,10 +59,13 @@ class MagnoliaMainWindow : public Gtk::Window
 		void on_submenu_open_activate();
 		void on_submenu_about_activate();
 		void on_submenu_image_control_window_activate();
+		void on_sub_radio_menu_debug_log_level_set();
+		void on_sub_radio_menu_lib_type_set();
 		void on_submenu_use_opencv_lib_activate(void);
 		void on_about_dialog_response(int response_id);
 		void on_image_window_close(ImageWindowStruct *image_window);
 		void on_image_control_window_close();
+		void update_ui_memu_items_with_xml_struct();
 };
 
 
