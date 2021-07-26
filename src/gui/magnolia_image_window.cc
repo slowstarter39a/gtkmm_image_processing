@@ -30,7 +30,7 @@ MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window)
 }
 MagnoliaImageWindow::MagnoliaImageWindow(Gtk::Window *parent_window, std::string filename)
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "filename = %s\n", filename.c_str());
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "filename = %s\n", filename.c_str());
 	set_border_width(10);
 	set_default_size(800, 800);
 
@@ -82,7 +82,7 @@ MagnoliaImageWindow::~MagnoliaImageWindow()
 	for (iter = image_list_.begin(); iter != image_list_.end(); iter++){
 		img_list = iter->second;
 
-		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Deleting List '%d'\n", iter->first);
+		MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "Deleting List '%d'\n", iter->first);
 
 		delete img_list->frame;
 		delete img_list->eventbox;
@@ -106,10 +106,10 @@ void MagnoliaImageWindow::on_show()
 
 bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "%s\n", __FUNCTION__);
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
 
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "magnolia_parent = %p\n", magnolia_parent);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "magnolia_parent = %p\n", magnolia_parent);
 	magnolia_parent->set_current_image_window(this); 
 
 	return 1;
@@ -117,7 +117,7 @@ bool MagnoliaImageWindow::on_focus_in_event(GdkEventFocus* focus_event)
 
 bool MagnoliaImageWindow::on_eventbox_button_press(GdkEventButton *event, int image_id) 
 {
-	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "image id = %d\n", image_id);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "image id = %d\n", image_id);
 
 	int frame_x_pos = 0;
 	int frame_y_pos = 0;

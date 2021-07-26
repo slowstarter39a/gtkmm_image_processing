@@ -42,4 +42,10 @@ class MagnoliaLogger {
 		logger->print_log(__FUNCTION__, __LINE__, tag, level, fmt, ##__VA_ARGS__); \
 	} while(0);
 
+#define MGNL_SET_LOG_LEVEL(level) \
+	do { \
+		MagnoliaLogger *logger = MagnoliaLogger::get_instance(); \
+		logger->set_log_level((log_message_level)level); \
+	} while(0);
+
 #endif /* _MAGNOLIA_LOGGER_H */
