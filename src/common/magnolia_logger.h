@@ -12,6 +12,9 @@
 #ifndef _MAGNOLIA_LOGGER_H
 #define _MAGNOLIA_LOGGER_H
 
+#include <dlfcn.h>
+#include "image_processing_main.h"
+
 enum log_message_level
 {
 	LOG_LEVEL_ERROR = 0,
@@ -46,6 +49,21 @@ class MagnoliaLogger {
 	do { \
 		MagnoliaLogger *logger = MagnoliaLogger::get_instance(); \
 		logger->set_log_level((log_message_level)level); \
+		\
+		void *handle; \
+		handle = dlopen("image_processing_lib.so", RTLD_LAZY); \
+		if (!handle) { \
+			MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library failed. %s\n", dlerror()); \
+			return; \
+		} \
+		image_processing_log_level_handler_t *fnImageProcessing = (image_processing_log_level_handler_t*)dlsym(handle, "ImageProcessingSetLogLevel"); \
+		if (dlerror() != NULL) { \
+			MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library function ImageProcessingDispatcher failed\n"); \
+			dlclose(handle); \
+			return; \
+		} \
+		fnImageProcessing(level); \
+		dlclose(handle); \
 	} while(0);
 
 #endif /* _MAGNOLIA_LOGGER_H */
