@@ -43,7 +43,7 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 	image_processing_handler_t *fnImageProcessing = (image_processing_handler_t*)dlsym(handle, "ImageProcessingDispatcher");
 	if (dlerror() != NULL) {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library function ImageProcessingDispatcher failed\n");
-		return;
+		goto end;
 	}
 	result = fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
@@ -53,6 +53,9 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 	else {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "result of fnImageProcessing = %d\n", result);
 	}
+
+end:
+	dlclose(handle);
 }
 
 MagnoliaControlWindow::MagnoliaControlWindow()

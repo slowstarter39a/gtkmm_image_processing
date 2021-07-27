@@ -25,6 +25,7 @@ static const char *tag = __FILE__;
 
 
 extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+extern "C" int ImageProcessingSetLogLevel(int log_level);
 
 int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
@@ -53,6 +54,13 @@ int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf 
 	return FAILURE;
 }
 
+extern "C" int ImageProcessingSetLogLevel(int log_level)
+{
+	MagnoliaLogger *logger = MagnoliaLogger::get_instance();
+	logger->set_log_level((log_message_level)log_level);
+
+	return 0;
+}
 
 ImageProcessingMain::~ImageProcessingMain()
 {

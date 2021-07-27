@@ -35,5 +35,6 @@ class ImageProcessingMain
 };
 
 typedef int image_processing_handler_t(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+typedef int image_processing_log_level_handler_t(int log_level);
 
 #endif //_IMAGE_PROCESSING_MAIN_H 
