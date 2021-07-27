@@ -9,7 +9,20 @@
     * int image_id_;
     * int image_count_;
 
-2. Compilation
+2. Open sources libraries used in this project
+  * gtkmm
+  * opencv
+  * tinyxml2
+
+3. packages need to be installed to compile
+   ```bash
+   $ sudo apt-get update
+   $ sudo apt-get install libgtkmm-3.0-dev
+   $ sudo apt-get install libtinyxml2-dev
+   $ sudo apt-get install libopencv-dev
+   ```
+
+4. Compilation
   * Debug mode compilation
     ```bash
     $ ./build eng
@@ -22,16 +35,20 @@
      ```bash
      $ ./build all
      ```
-3. Clean
+5. Clean
     ```bash
     $ ./build clean
     ```
 
-4. Execution  
+6. Execution
     ```bash
    $ export LD_LIBRARY_PATH=./:$LD_LIBRARY_PATH    
       #add path to LD_LIBRARY_PATH to search image_processing_lib.so in current directory
    $ ./magnolia
+   ```
+   Or simply run run.sh
+   ```bash
+   $ ./run.sh
    ```
 
  
