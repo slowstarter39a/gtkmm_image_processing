@@ -44,7 +44,7 @@ void MagnoliaXmlStruct::make_default_xml_if_not_exists()
     auto config_element = doc.NewElement("config");
 
     auto log_level_element = doc.NewElement("log_level");
-    log_level_element->SetText("10");
+    log_level_element->SetText("0");
     config_element->LinkEndChild(log_level_element);
 
     auto default_image_path_element  = doc.NewElement("default_image_path");
@@ -54,7 +54,7 @@ void MagnoliaXmlStruct::make_default_xml_if_not_exists()
     config_element->LinkEndChild(default_image_path_element);
  
     auto lib_type_element = doc.NewElement("lib_type");
-    lib_type_element->SetText("8");
+    lib_type_element->SetText("0");
     config_element->LinkEndChild(lib_type_element);
 
 	doc.LinkEndChild(config_element);
