@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "image_processing_opencv.h"
-#include <opencv2/opencv.hpp>
 #include "magnolia_logger.h"
 
 using namespace std;
@@ -28,20 +27,38 @@ int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk:
 	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "opencv image_processing_handler()\n");
 	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return FAILURE;
 	if (src_img.get_bits_per_sample() != 8 ) return FAILURE;
+	cv::Mat opencv_src_img = convert_gdk_pixbuf_to_cv_mat(src_img);
+	cv::Mat opencv_dst_img;
 
-	cv::Mat opencv_src_img(cv::Size(src_img.get_width(), src_img.get_height()), CV_8UC3, (uchar*)src_img.get_pixels(), src_img.get_rowstride());
-	int offset = 0;
-	int channel = opencv_src_img.channels();
+	bitwise_not(opencv_src_img, opencv_dst_img);
+	int len = opencv_src_img.rows * opencv_src_img.cols * opencv_src_img.channels();
 
-	guchar * dst_pixels= dst_img.get_pixels();
-	for (int y = 0; y < opencv_src_img.rows; y++) {
-		for (int x= 0; x < opencv_src_img.cols; x++) {
-			offset = y * opencv_src_img.step.buf[0];
-			for(int ch = 0; ch < channel; ch++) {
-				dst_pixels[offset + channel * x + ch] = 255 - opencv_src_img.data[offset + channel * x + ch]; 
-			}
+	//No invert for alpha channel
+	if (src_img.get_has_alpha()) {
+		for (int i = 3; i < len; i+=4) {
+			opencv_dst_img.data[i] = ~opencv_dst_img.data[i];
 		}
 	}
 
+	guchar * dst_pixels= dst_img.get_pixels();
+	memcpy(dst_pixels, opencv_dst_img.data, opencv_src_img.rows * opencv_src_img.cols * opencv_src_img.channels());
+
 	return SUCCESS;
+}
+
+cv::Mat ImageProcessingOpenCv::convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img)
+{
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "height = %d\n", src_img.get_height());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "width= %d\n", src_img.get_width());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "get_has_alpha() = %d\n", src_img.get_has_alpha());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "iNChannels= %d\n", src_img.get_n_channels());
+
+	if (src_img.get_has_alpha()) {
+		cv::Mat opencv_src_img(cv::Size(src_img.get_width(), src_img.get_height()), CV_8UC4, (uchar*)src_img.get_pixels(), src_img.get_rowstride());
+		return opencv_src_img;
+	}
+	else {
+		cv::Mat opencv_src_img(cv::Size(src_img.get_width(), src_img.get_height()), CV_8UC3, (uchar*)src_img.get_pixels(), src_img.get_rowstride());
+		return opencv_src_img;
+	}
 }
