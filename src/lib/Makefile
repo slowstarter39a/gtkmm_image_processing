@@ -1,6 +1,6 @@
 CC=g++ -std=c++11
 #TARGET_LIB=lib_magnolia_image_process
-CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` -Wall -ldl -I$(PRJ_ROOT)/$(SRC)/$(COMMON) -I$(PRJ_ROOT)/$(SRC)/$(LIB) -I/usr/include/opencv4
+CFLAGS=`pkg-config gtkmm-3.0 --cflags --libs` `pkg-config --cflags --libs opencv4` -Wall -ldl -I$(PRJ_ROOT)/$(SRC)/$(COMMON) -I$(PRJ_ROOT)/$(SRC)/$(LIB)
 
 ifneq (,$(findstring $(MAKECMDGOALS), "eng"))
 CFLAGS+=-g
