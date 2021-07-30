@@ -60,16 +60,17 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_trace", p_sub_radio_menu_debug_log_level_trace_);
 	magnolia_main_ref_glade_->get_widget("sub_radio_menu_lib_type_gtkmm", p_sub_radio_menu_lib_type_gtkmm_);
 	magnolia_main_ref_glade_->get_widget("sub_radio_menu_lib_type_opencv", p_sub_radio_menu_lib_type_opencv_);
+	magnolia_main_ref_glade_->get_widget("sub_menu_set_default_image_path", p_sub_menu_set_default_image_path_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_about", p_sub_menu_about_);
 
 	p_sub_menu_new_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_submenu_new_activate));
+				&MagnoliaMainWindow::on_sub_menu_new_activate));
 
 	p_sub_menu_open_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_submenu_open_activate));
+				&MagnoliaMainWindow::on_sub_menu_open_activate));
 
 	p_sub_menu_image_control_window_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_submenu_image_control_window_activate));
+				&MagnoliaMainWindow::on_sub_menu_image_control_window_activate));
 
 	p_sub_radio_menu_debug_log_level_error_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_radio_menu_debug_log_level_set));
@@ -92,8 +93,11 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	p_sub_radio_menu_lib_type_opencv_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_radio_menu_lib_type_set));
 
+	p_sub_menu_set_default_image_path_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_menu_set_default_image_path_activate));
+
 	p_sub_menu_about_->signal_activate().connect(sigc::mem_fun(*this,
-				&MagnoliaMainWindow::on_submenu_about_activate));
+				&MagnoliaMainWindow::on_sub_menu_about_activate));
 
 	magnolia_about_dialog_.set_transient_for(*this);
 	magnolia_about_dialog_.set_program_name("Magnolia");
@@ -113,7 +117,7 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 	update_ui_memu_items_with_xml_struct();
 }
 
-void MagnoliaMainWindow::on_submenu_new_activate(void)
+void MagnoliaMainWindow::on_sub_menu_new_activate(void)
 {
 	//MagnoliaImageWindow magnolia_image_window;
 	//magnolia_image_window_.set_title("Magnolia Image window");
@@ -123,7 +127,7 @@ void MagnoliaMainWindow::on_submenu_new_activate(void)
 	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
 }
 
-void MagnoliaMainWindow::on_submenu_open_activate(void)
+void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 {
 	Gtk::FileChooserDialog dialog("Please choose a file", 
 			Gtk::FILE_CHOOSER_ACTION_OPEN);
@@ -131,6 +135,7 @@ void MagnoliaMainWindow::on_submenu_open_activate(void)
 
 	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
 	dialog.add_button("_Open", Gtk::RESPONSE_OK);
+	dialog.set_current_folder(magnolia_xml_struct_->get_default_image_path());
 
 	auto filter_image= Gtk::FileFilter::create();
 	filter_image->set_name("Image files");
@@ -196,7 +201,7 @@ void MagnoliaMainWindow::set_current_image_window(MagnoliaImageWindow* current_w
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "set current window %p\n", current_image_window_);
 }
 
-void MagnoliaMainWindow::on_submenu_about_activate(void)
+void MagnoliaMainWindow::on_sub_menu_about_activate(void)
 {
 	magnolia_about_dialog_.show();
 	magnolia_about_dialog_.present();
@@ -225,16 +230,9 @@ void MagnoliaMainWindow::on_image_window_close(ImageWindowStruct *img_window)
 	delete img_window; 
 }
 
-
-void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
+void MagnoliaMainWindow::on_sub_menu_image_control_window_activate(void)
 {
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "%s\n", __FUNCTION__);
-	magnolia_control_window_ = new MagnoliaControlWindow();
-	magnolia_control_window_->set_title("Image Control Window");
-	magnolia_control_window_->signal_realize();
-
-	magnolia_control_window_->signal_hide().connect( 
-			sigc::mem_fun(*this, &MagnoliaMainWindow::on_image_control_window_close)) ;
 
 	auto refBuilder = Gtk::Builder::create();
 	try
@@ -257,13 +255,71 @@ void MagnoliaMainWindow::on_submenu_image_control_window_activate(void)
 		return;
 	}
 
-	refBuilder->get_widget_derived("control_window_ui", magnolia_control_window_);
+	refBuilder->get_widget_derived("id_control_window_ui", magnolia_control_window_);
 
 	magnolia_control_window_->set_parent_window(this);   //add to know parent window in magnolia_contro_window_
+	magnolia_control_window_->set_title("Image Control Window");
+	magnolia_control_window_->signal_realize();
+
+	magnolia_control_window_->signal_hide().connect(
+			sigc::mem_fun(*this, &MagnoliaMainWindow::on_image_control_window_close)) ;
 
 	magnolia_control_window_->show();
 	magnolia_control_window_->present();
 	//magnolia_control_window_->set_transient_for(*this);
+}
+
+void MagnoliaMainWindow::on_sub_menu_set_default_image_path_activate()
+{
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "%s\n", __FUNCTION__);
+
+	auto refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_file("glade/default_image_path_ui.glade");
+	}
+	catch(const Glib::FileError& ex)
+	{
+		std::cerr << "FileError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		std::cerr << "MarkupError: " << ex.what() << std::endl;
+		return;
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		std::cerr << "BuilderError: " <<ex.what() << std::endl;
+		return;
+	}
+
+	refBuilder->get_widget_derived("id_default_image_path_ui", magnolia_set_image_path_window_);
+	magnolia_set_image_path_window_->set_title("Set default Image Path Window");
+	magnolia_set_image_path_window_->signal_realize();
+	magnolia_set_image_path_window_->set_image_path(magnolia_xml_struct_->get_default_image_path());
+
+	magnolia_set_image_path_window_->set_parent_window(this);   //add to know parent window
+
+	magnolia_set_image_path_window_->signal_hide().connect(
+			sigc::mem_fun(*this, &MagnoliaMainWindow::on_set_default_image_path_window_close)) ;
+	//magnolia_set_image_path_window_->set_transient_for(*this);
+
+	int result = magnolia_set_image_path_window_->run();
+
+	switch(result) {
+		case Gtk::RESPONSE_OK:
+			magnolia_xml_struct_->set_default_image_path(magnolia_set_image_path_window_->get_image_path());
+			MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "default_image_path changed to %s\n", magnolia_xml_struct_->get_default_image_path());
+			break;
+
+		case Gtk::RESPONSE_CANCEL:
+			break;
+
+		default:
+			break;
+	}
+	magnolia_set_image_path_window_->hide();
 }
 
 //When selected radiomenuitem changed, this function called twice.
@@ -317,6 +373,13 @@ void MagnoliaMainWindow::on_image_control_window_close()
 	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
 	delete magnolia_control_window_;
 	magnolia_control_window_ = NULL;
+}
+
+void MagnoliaMainWindow::on_set_default_image_path_window_close()
+{
+	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "%s\n", __FUNCTION__);
+	delete magnolia_set_image_path_window_;
+	magnolia_set_image_path_window_= NULL;
 }
 
 MagnoliaImageWindow* MagnoliaMainWindow::get_current_image_window()

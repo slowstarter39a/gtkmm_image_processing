@@ -261,6 +261,14 @@
                         </child>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkMenuItem" id="sub_menu_set_default_image_path">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Set default image path...</property>
+                        <property name="use-underline">True</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

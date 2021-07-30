@@ -14,6 +14,7 @@
 #include <gtkmm.h>
 #include "magnolia_image_window.h"
 #include "magnolia_control_window.h"
+#include "magnolia_set_image_path_window.h"
 #include "magnolia_xml_struct.h"
 
 struct ImageWindowStruct
@@ -48,23 +49,26 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_trace_;
 		Gtk::RadioMenuItem *p_sub_radio_menu_lib_type_gtkmm_;
 		Gtk::RadioMenuItem *p_sub_radio_menu_lib_type_opencv_;
+		Gtk::MenuItem *p_sub_menu_set_default_image_path_;
 		Gtk::ImageMenuItem *p_sub_menu_about_;
 		MagnoliaImageWindow *current_image_window_ = NULL;
 		MagnoliaControlWindow *magnolia_control_window_ = NULL;
+		MagnoliaSetImagePathWindow *magnolia_set_image_path_window_ = NULL;
 		MagnoliaXmlStruct *magnolia_xml_struct_ = NULL;
 
 		std::map<int, ImageWindowStruct*> image_windows_;
 
-		void on_submenu_new_activate();
-		void on_submenu_open_activate();
-		void on_submenu_about_activate();
-		void on_submenu_image_control_window_activate();
+		void on_sub_menu_new_activate();
+		void on_sub_menu_open_activate();
+		void on_sub_menu_about_activate();
+		void on_sub_menu_image_control_window_activate();
 		void on_sub_radio_menu_debug_log_level_set();
 		void on_sub_radio_menu_lib_type_set();
-		void on_submenu_use_opencv_lib_activate(void);
+		void on_sub_menu_set_default_image_path_activate();
 		void on_about_dialog_response(int response_id);
 		void on_image_window_close(ImageWindowStruct *image_window);
 		void on_image_control_window_close();
+		void on_set_default_image_path_window_close();
 		void update_ui_memu_items_with_xml_struct();
 };
 
