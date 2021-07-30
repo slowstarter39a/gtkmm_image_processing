@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkWindow" id="control_window_ui">
-    <property name="can_focus">False</property>
+  <object class="GtkWindow" id="id_control_window_ui">
+    <property name="can-focus">False</property>
     <child>
       <object class="GtkFixed">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <child>
           <object class="GtkButton" id="id_button_test">
             <property name="label" translatable="yes">Test Button</property>
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
           </object>
           <packing>
             <property name="x">200</property>
@@ -25,11 +25,11 @@
         <child>
           <object class="GtkButton" id="id_button_inverse">
             <property name="label" translatable="yes">Inverse</property>
-            <property name="width_request">100</property>
-            <property name="height_request">20</property>
+            <property name="width-request">100</property>
+            <property name="height-request">20</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
           </object>
           <packing>
             <property name="x">20</property>
