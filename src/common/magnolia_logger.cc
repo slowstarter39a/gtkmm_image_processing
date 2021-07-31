@@ -83,7 +83,12 @@ void MagnoliaLogger::print_log(const char*function_name, int line, const char *t
     oss << std::put_time(&buf, "%H:%M:%S"); // HH:MM:SS
     oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
 
-	snprintf(log_string, 256, "%s [%s] [%s:%d] : ", log_message_level_string[log_level], oss.str().c_str(), function_name, line);
+	if (this->log_level_ >= LOG_LEVEL_TRACE) {
+		snprintf(log_string, 256, "%-5s [%-12s] [%-30s] [%s:%d] : ", log_message_level_string[log_level], oss.str().c_str(), tag_name, function_name, line);
+	}
+	else {
+		snprintf(log_string, 256, "%-5s [%-12s] [%s:%d] : ", log_message_level_string[log_level], oss.str().c_str(), function_name, line);
+	}
 	strncat(log_string, str, 512);
 
 	va_list args;

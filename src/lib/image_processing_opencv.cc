@@ -9,7 +9,6 @@
  * =====================================================================================
  */
 
-#include <iostream>
 #include "image_processing_opencv.h"
 #include "magnolia_logger.h"
 
@@ -19,14 +18,13 @@ static const char *tag = __FILE__;
 
 ImageProcessingOpenCv::~ImageProcessingOpenCv()
 {
-
 }
 
-int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingOpenCv::image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
 	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "opencv image_processing_handler()\n");
-	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return FAILURE;
-	if (src_img.get_bits_per_sample() != 8 ) return FAILURE;
+	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return MAGNOLIA_FAILURE;
+	if (src_img.get_bits_per_sample() != 8 ) return MAGNOLIA_FAILURE;
 	cv::Mat opencv_src_img = convert_gdk_pixbuf_to_cv_mat(src_img);
 	cv::Mat opencv_dst_img;
 
@@ -43,7 +41,7 @@ int ImageProcessingOpenCv::image_processing_handler(magnolia_cmd_type *cmd, Gdk:
 	guchar * dst_pixels= dst_img.get_pixels();
 	memcpy(dst_pixels, opencv_dst_img.data, opencv_src_img.rows * opencv_src_img.cols * opencv_src_img.channels());
 
-	return SUCCESS;
+	return MAGNOLIA_SUCCESS;
 }
 
 cv::Mat ImageProcessingOpenCv::convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img)
@@ -61,4 +59,10 @@ cv::Mat ImageProcessingOpenCv::convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img
 		cv::Mat opencv_src_img(cv::Size(src_img.get_width(), src_img.get_height()), CV_8UC3, (uchar*)src_img.get_pixels(), src_img.get_rowstride());
 		return opencv_src_img;
 	}
+}
+
+int ImageProcessingOpenCv::image_processing_not_implemented(magnolia_cmd_param_type *cmd)
+{
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "This image processing API has not been implemented! class = ImageProcessingOpenCv, cmd id = %d\n", cmd->mag_cmd);
+	return MAGNOLIA_NOT_IMPLEMENTED;
 }

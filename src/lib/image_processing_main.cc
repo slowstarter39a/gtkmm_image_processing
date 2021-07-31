@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <iostream>
 #include "image_processing_main.h"
 #include "image_processing_magnolia.h"
 #include "image_processing_opencv.h"
@@ -23,35 +22,50 @@ limitations under the License.
 using namespace std;
 static const char *tag = __FILE__;
 
-
-extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 extern "C" int ImageProcessingSetLogLevel(int log_level);
 
-int ImageProcessingDispatcher(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+magnolia_image_processing_handler magnolia_func_handler[MAGNOLIA_CMD_MAX] =
 {
-	int result = FAILURE;
+			&ImageProcessingMagnolia::image_processing_inversion,
+			&ImageProcessingMagnolia::image_processing_inversion
+};
+
+opencv_image_processing_handler opencv_func_handler[MAGNOLIA_CMD_MAX] =
+{
+			&ImageProcessingOpenCv::image_processing_inversion,
+			&ImageProcessingOpenCv::image_processing_inversion
+};
+
+int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+{
+	int result = MAGNOLIA_FAILURE;
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "ImageProcessingMain ImageProcessingDispatcher! lib_type = %d\n", lib_type);
 
 	if (lib_type == 0) {
-		ImageProcessingMagnolia *magnolia_processing;
-		magnolia_processing= new ImageProcessingMagnolia;
-
-		result  = magnolia_processing->image_processing_handler(cmd, src_img, dst_img); 
-
+		ImageProcessingMagnolia *magnolia_processing = new ImageProcessingMagnolia;
+		if (magnolia_func_handler[cmd->mag_cmd]) {
+			result = CALL_MEMBER_FUNCTION(magnolia_processing, magnolia_func_handler[cmd->mag_cmd])(cmd, src_img, dst_img);
+		}
+		else {
+			magnolia_processing->image_processing_not_implemented(cmd);
+		}
 		delete magnolia_processing;
 		return result;
 	}
 	else if (lib_type == 1) {
-		ImageProcessingOpenCv *opencv_processing;
-		opencv_processing= new ImageProcessingOpenCv;
-
-		result = opencv_processing->image_processing_handler(cmd, src_img, dst_img);
-
+		ImageProcessingOpenCv *opencv_processing = new ImageProcessingOpenCv;
+		if (opencv_func_handler[cmd->mag_cmd]) {
+			result = CALL_MEMBER_FUNCTION(opencv_processing, opencv_func_handler[cmd->mag_cmd])(cmd, src_img, dst_img);
+		}
+		else {
+			opencv_processing->image_processing_not_implemented(cmd);
+		}
 		delete opencv_processing; 
 		return result; 
 	}
 
-	return FAILURE;
+	return MAGNOLIA_FAILURE;
 }
 
 extern "C" int ImageProcessingSetLogLevel(int log_level)
@@ -64,5 +78,4 @@ extern "C" int ImageProcessingSetLogLevel(int log_level)
 
 ImageProcessingMain::~ImageProcessingMain()
 {
-
 }

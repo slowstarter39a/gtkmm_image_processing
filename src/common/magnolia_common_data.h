@@ -11,17 +11,22 @@
 #ifndef _MAGNOLIA_COMMON_DATA_H
 #define _MAGNOLIA_COMMON_DATA_H
 
-#define SUCCESS				0
-#define FAILURE				1
+enum magnolia_error_type
+{
+	MAGNOLIA_SUCCESS           = 0,
+	MAGNOLIA_FAILURE,
+	MAGNOLIA_NOT_IMPLEMENTED,
+	MAGNOLIA_ERROR_MAX,
+};
 
 enum magnolia_cmd_enum_type
 {
-	MAGNOLIA_CMD_INVERSE 		= 0,
+	MAGNOLIA_CMD_INVERSION 		= 0,
 	MAGNOLIA_CMD_HISTOGRAM , 
 	MAGNOLIA_CMD_MAX,
 };
 
-struct magnolia_cmd_type
+struct magnolia_cmd_param_type
 {
 	magnolia_cmd_enum_type		mag_cmd;
 };
