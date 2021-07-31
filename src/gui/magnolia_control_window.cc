@@ -10,7 +10,6 @@
  */
 
 #include <dlfcn.h>
-#include <iostream>
 #include "magnolia_control_window.h"
 #include "magnolia_image_window.h"
 #include "magnolia_main_window.h"
@@ -21,9 +20,9 @@
 using namespace std;
 static const char *tag = __FILE__;
 
-void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cmd_type *cmd)
+void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cmd_param_type *cmd)
 {
-	int result = FAILURE;
+	int result = MAGNOLIA_FAILURE;
 
 	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_src_image_pixbuf();
 	Gdk::Pixbuf &src_img= *image_src_buf.operator->(); // just for convenience
@@ -109,8 +108,8 @@ void MagnoliaControlWindow::on_button_inverse_clicked()
 	MagnoliaMainWindow *magnolia_parent = dynamic_cast<MagnoliaMainWindow*>(parent_window_);
 	MagnoliaImageWindow *image_window = magnolia_parent->get_current_image_window();
 
-	magnolia_cmd_type cmd;
-	cmd.mag_cmd = MAGNOLIA_CMD_INVERSE;
+	magnolia_cmd_param_type cmd;
+	cmd.mag_cmd = MAGNOLIA_CMD_INVERSION;
 
 	int lib_type = magnolia_parent->get_magnolia_xml_struct()->get_lib_type();
 

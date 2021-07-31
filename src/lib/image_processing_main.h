@@ -26,7 +26,8 @@ class ImageProcessingMain
 {
 	public:
 		virtual ~ImageProcessingMain();
- 		virtual int image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img) = 0;
+		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img) = 0;
+		virtual int image_processing_not_implemented(magnolia_cmd_param_type *cmd) = 0;
 
 	protected:
 	private:
@@ -34,7 +35,9 @@ class ImageProcessingMain
 
 };
 
-typedef int image_processing_handler_t(int lib_type, magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
 typedef int image_processing_log_level_handler_t(int log_level);
+
+#define CALL_MEMBER_FUNCTION(obj, ptrToMember) (obj->*ptrToMember)
 
 #endif //_IMAGE_PROCESSING_MAIN_H 

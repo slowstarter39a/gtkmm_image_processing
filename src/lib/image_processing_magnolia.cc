@@ -8,7 +8,6 @@
  *
  * =====================================================================================
  */
-#include <iostream>
 #include "image_processing_magnolia.h"
 #include "magnolia_logger.h"
 
@@ -17,13 +16,12 @@ static const char *tag = __FILE__;
 
 ImageProcessingMagnolia::~ImageProcessingMagnolia()
 {
-
 }
 
-int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingMagnolia::image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
 {
-	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB) return FAILURE;
-	if (src_img.get_bits_per_sample() != 8) return FAILURE;
+	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB) return MAGNOLIA_FAILURE;
+	if (src_img.get_bits_per_sample() != 8) return MAGNOLIA_FAILURE;
 
 	int width= src_img.get_width();
 	int height= src_img.get_height();
@@ -56,6 +54,11 @@ int ImageProcessingMagnolia::image_processing_handler(magnolia_cmd_type *cmd, Gd
 		}
 	}
 
-	return SUCCESS;
+	return MAGNOLIA_SUCCESS;
 }
 
+int ImageProcessingMagnolia::image_processing_not_implemented(magnolia_cmd_param_type *cmd)
+{
+	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "This image processing API has not been implemented! class = ImageProcessingMagnolia, cmd id = %d\n", cmd->mag_cmd);
+	return MAGNOLIA_NOT_IMPLEMENTED;
+}
