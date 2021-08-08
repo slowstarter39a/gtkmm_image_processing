@@ -20,25 +20,29 @@ ImageProcessingOpenCv::~ImageProcessingOpenCv()
 {
 }
 
-int ImageProcessingOpenCv::image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingOpenCv::image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
 {
+	Gdk::Pixbuf *src_img_pixbuf = src_img[0].pixbuf;
+	Gdk::Pixbuf *dst_img_pixbuf = dst_img[0].pixbuf;
+	*dst_img[0].text = "Inversion";
+
 	MGNL_PRINTF(tag, LOG_LEVEL_TRACE, "opencv image_processing_handler()\n");
-	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB ) return MAGNOLIA_FAILURE;
-	if (src_img.get_bits_per_sample() != 8 ) return MAGNOLIA_FAILURE;
-	cv::Mat opencv_src_img = convert_gdk_pixbuf_to_cv_mat(src_img);
+	if (src_img_pixbuf->get_colorspace() != Gdk::COLORSPACE_RGB ) return MAGNOLIA_FAILURE;
+	if (src_img_pixbuf->get_bits_per_sample() != 8 ) return MAGNOLIA_FAILURE;
+	cv::Mat opencv_src_img = convert_gdk_pixbuf_to_cv_mat(*src_img_pixbuf);
 	cv::Mat opencv_dst_img;
 
 	bitwise_not(opencv_src_img, opencv_dst_img);
 	int len = opencv_src_img.rows * opencv_src_img.cols * opencv_src_img.channels();
 
 	//No invert for alpha channel
-	if (src_img.get_has_alpha()) {
+	if (src_img_pixbuf->get_has_alpha()) {
 		for (int i = 3; i < len; i+=4) {
 			opencv_dst_img.data[i] = ~opencv_dst_img.data[i];
 		}
 	}
 
-	guchar * dst_pixels= dst_img.get_pixels();
+	guchar *dst_pixels= dst_img_pixbuf->get_pixels();
 	memcpy(dst_pixels, opencv_dst_img.data, opencv_src_img.rows * opencv_src_img.cols * opencv_src_img.channels());
 
 	return MAGNOLIA_SUCCESS;

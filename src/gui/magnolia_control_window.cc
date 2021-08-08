@@ -16,6 +16,7 @@
 #include "image_processing_main.h"
 #include "magnolia_common_data.h"
 #include "magnolia_logger.h"
+#include <vector>
 
 using namespace std;
 static const char *tag = __FILE__;
@@ -24,14 +25,18 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 {
 	int result = MAGNOLIA_FAILURE;
 
-	Glib::RefPtr<Gdk::Pixbuf> image_src_buf =  image_window->get_src_image_pixbuf();
-	Gdk::Pixbuf &src_img= *image_src_buf.operator->(); // just for convenience
+	Glib::RefPtr<Gdk::Pixbuf> src_image_pixbuf =  image_window->get_src_image_pixbuf();
+	Gdk::Pixbuf &src_pixbuf= *src_image_pixbuf.operator->(); // just for convenience
 
-	int dst_img_width = src_img.get_width();
-	int dst_img_height = src_img.get_height();
-	Glib::RefPtr<Gdk::Pixbuf> image_dst_buf = Gdk::Pixbuf::create(src_img.get_colorspace(), src_img.get_has_alpha(), src_img.get_bits_per_sample(),
-			dst_img_width, dst_img_height);
-	Gdk::Pixbuf &dst_img = *image_dst_buf.operator->();
+	Glib::ustring src_label_text = image_window->get_src_image_label_text();
+	vector<pixbuf_label> src_img = {{&src_pixbuf, &src_label_text}};
+
+	Glib::RefPtr<Gdk::Pixbuf> dst_image_pixbuf = Gdk::Pixbuf::create(src_pixbuf.get_colorspace(), src_pixbuf.get_has_alpha(), src_pixbuf.get_bits_per_sample(),
+			src_pixbuf.get_width(), src_pixbuf.get_height());
+	Gdk::Pixbuf &dst_pixbuf = *dst_image_pixbuf.operator->();
+
+	Glib::ustring dst_label_text;
+	vector<pixbuf_label> dst_img = {{&dst_pixbuf, &dst_label_text}};
 
 	void *handle;
 	handle = dlopen("image_processing_lib.so", RTLD_LAZY);
@@ -44,10 +49,11 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Open Library function ImageProcessingDispatcher failed\n");
 		goto end;
 	}
+
 	result = fnImageProcessing(lib_type, cmd, src_img, dst_img);
 
 	if (!result) {
-		image_window->show_dst_image(image_dst_buf, dst_img_width, dst_img_height);
+		image_window->show_dst_image(dst_image_pixbuf, dst_label_text);
 	}
 	else {
 		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "result of fnImageProcessing = %d\n", result);

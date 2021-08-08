@@ -20,7 +20,9 @@ struct ImageListStruct
 	int image_id;
 	Gtk::Frame *frame;
 	Gtk::EventBox *eventbox;
+	Gtk::VBox *vbox;
 	Gtk::Image *image;
+	Gtk::Label *label;
 };
 
 struct MousePoint
@@ -39,7 +41,8 @@ class MagnoliaImageWindow :public Gtk::Window
 		virtual void on_show();
 		virtual bool on_focus_in_event(GdkEventFocus* focus_event);
 		Glib::RefPtr<Gdk::Pixbuf> get_src_image_pixbuf();
-		void show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, int dst_img_widht, int dst_img_height);
+		Glib::ustring get_src_image_label_text();
+		void show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text);
 		bool on_eventbox_button_motion_notify(GdkEventMotion* event);
 
 	private:

@@ -15,12 +15,14 @@
 #include <gtkmm.h>
 #include "image_processing_main.h"
 #include <opencv2/opencv.hpp>
+#include "magnolia_common_data.h"
+#include <vector>
 
 class ImageProcessingOpenCv: public ImageProcessingMain
 {
 	public:
 		virtual ~ImageProcessingOpenCv();
-		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
 		cv::Mat convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img);
 		virtual int image_processing_not_implemented(magnolia_cmd_param_type *cmd);
 
@@ -28,6 +30,6 @@ class ImageProcessingOpenCv: public ImageProcessingMain
 	private:
 };
 
-typedef int (ImageProcessingOpenCv::*opencv_image_processing_handler)(magnolia_cmd_param_type*, Gdk::Pixbuf&, Gdk::Pixbuf&);
+typedef int (ImageProcessingOpenCv::*opencv_image_processing_handler)(magnolia_cmd_param_type*, std::vector<pixbuf_label>&, std::vector<pixbuf_label>&);
 
 #endif //_IMAGE_PROCESSING_OPENCV_H 
