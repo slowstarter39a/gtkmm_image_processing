@@ -22,22 +22,22 @@ limitations under the License.
 using namespace std;
 static const char *tag = __FILE__;
 
-extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+extern "C" int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
 extern "C" int ImageProcessingSetLogLevel(int log_level);
 
 magnolia_image_processing_handler magnolia_func_handler[MAGNOLIA_CMD_MAX] =
 {
-			&ImageProcessingMagnolia::image_processing_inversion,
-			&ImageProcessingMagnolia::image_processing_inversion
+	&ImageProcessingMagnolia::image_processing_inversion,
+	&ImageProcessingMagnolia::image_processing_inversion
 };
 
 opencv_image_processing_handler opencv_func_handler[MAGNOLIA_CMD_MAX] =
 {
-			&ImageProcessingOpenCv::image_processing_inversion,
-			&ImageProcessingOpenCv::image_processing_inversion
+	&ImageProcessingOpenCv::image_processing_inversion,
+	&ImageProcessingOpenCv::image_processing_inversion
 };
 
-int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingDispatcher(int lib_type, magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
 {
 	int result = MAGNOLIA_FAILURE;
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "ImageProcessingMain ImageProcessingDispatcher! lib_type = %d\n", lib_type);

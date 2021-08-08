@@ -31,6 +31,12 @@ struct magnolia_cmd_param_type
 	magnolia_cmd_enum_type		mag_cmd;
 };
 
+struct pixbuf_label
+{
+	Gdk::Pixbuf *pixbuf;
+	Glib::ustring *text;
+};
+
 #endif /* _MAGNOLIA_COMMON_DATA_H  */
 
 

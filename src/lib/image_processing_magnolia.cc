@@ -18,20 +18,24 @@ ImageProcessingMagnolia::~ImageProcessingMagnolia()
 {
 }
 
-int ImageProcessingMagnolia::image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img)
+int ImageProcessingMagnolia::image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
 {
-	if (src_img.get_colorspace() != Gdk::COLORSPACE_RGB) return MAGNOLIA_FAILURE;
-	if (src_img.get_bits_per_sample() != 8) return MAGNOLIA_FAILURE;
+	Gdk::Pixbuf *src_img_pixbuf = src_img[0].pixbuf;
+	Gdk::Pixbuf *dst_img_pixbuf = dst_img[0].pixbuf;
+	*dst_img[0].text = "Inversion";
 
-	int width= src_img.get_width();
-	int height= src_img.get_height();
+	if (src_img_pixbuf->get_colorspace() != Gdk::COLORSPACE_RGB) return MAGNOLIA_FAILURE;
+	if (src_img_pixbuf->get_bits_per_sample() != 8) return MAGNOLIA_FAILURE;
+
+	int width= src_img_pixbuf->get_width();
+	int height= src_img_pixbuf->get_height();
 	int offset = 0;
-	guchar * src_pixels= src_img.get_pixels();
-	guchar * dst_pixels= dst_img.get_pixels();
+	guchar *src_pixels= src_img_pixbuf->get_pixels();
+	guchar *dst_pixels= dst_img_pixbuf->get_pixels();
 
-	int src_n_channels= src_img.get_n_channels(); 
-	int src_row_stride = src_img.get_rowstride();
-	bool has_alpha_channel = src_img.get_has_alpha();
+	int src_n_channels= src_img_pixbuf->get_n_channels();
+	int src_row_stride = src_img_pixbuf->get_rowstride();
+	bool has_alpha_channel = src_img_pixbuf->get_has_alpha();
 
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "rowstride = %d\n", src_row_stride);
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "iNChannels= %d\n", src_n_channels);
@@ -41,7 +45,7 @@ int ImageProcessingMagnolia::image_processing_inversion(magnolia_cmd_param_type 
 
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			offset = y * src_img.get_rowstride() + x * src_n_channels;
+			offset = y * src_img_pixbuf->get_rowstride() + x * src_n_channels;
 
 			dst_pixels[offset] = 255 - src_pixels[offset];
 			dst_pixels[offset + 1] = 255 - src_pixels[offset + 1];

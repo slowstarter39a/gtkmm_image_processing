@@ -21,12 +21,13 @@ limitations under the License.
 #include <gdkmm/rgba.h>
 #include <gtkmm/grid.h>
 #include "magnolia_common_data.h"
+#include <vector>
 
 class ImageProcessingMain
 {
 	public:
 		virtual ~ImageProcessingMain();
-		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img) = 0;
+		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
 		virtual int image_processing_not_implemented(magnolia_cmd_param_type *cmd) = 0;
 
 	protected:
@@ -35,7 +36,8 @@ class ImageProcessingMain
 
 };
 
-typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+//typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
 typedef int image_processing_log_level_handler_t(int log_level);
 
 #define CALL_MEMBER_FUNCTION(obj, ptrToMember) (obj->*ptrToMember)
