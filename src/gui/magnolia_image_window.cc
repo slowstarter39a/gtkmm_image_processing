@@ -185,7 +185,7 @@ Glib::ustring MagnoliaImageWindow::get_src_image_label_text()
 	return current_img_list_struct_->label->get_text();
 }
 
-void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text)
+void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count)
 { 
 	int src_frame_width = current_img_list_struct_->frame->get_allocated_width();
 	int src_frame_x_pos = fixed_->child_property_x(*(current_img_list_struct_->frame));
@@ -199,6 +199,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Gli
 	img_list->label = new Gtk::Label;
 	img_list->image->set(dst_buf);
 	img_list->label->set_text("<" + label_text + ">");
+	img_list->label->set_line_wrap(true);
 
 	if (!img_list || !img_list->frame || !img_list->eventbox || !img_list->image)
 		return;
@@ -212,7 +213,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Gli
 	img_list->vbox->pack_start(*img_list->label);
 	img_list->image_id = image_cnt_;
 
-	fixed_->put(*(img_list->frame), src_frame_x_pos + src_frame_width, src_frame_y_pos); 
+	fixed_->put(*(img_list->frame), src_frame_x_pos + ((1 + result_image_count) *src_frame_width), src_frame_y_pos); 
 
 	img_list->eventbox->set_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON1_MOTION_MASK);
 	img_list->eventbox->signal_button_press_event().connect(sigc::bind<int>

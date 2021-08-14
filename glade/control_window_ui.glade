@@ -25,11 +25,27 @@
         <child>
           <object class="GtkButton" id="id_button_inverse">
             <property name="label" translatable="yes">Inverse</property>
-            <property name="width-request">100</property>
-            <property name="height-request">20</property>
+            <property name="width-request">120</property>
+            <property name="height-request">40</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">20</property>
+            <property name="y">70</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="id_button_color_image_to_gray_image">
+            <property name="label" translatable="yes">color image to
+ gray image</property>
+            <property name="width-request">120</property>
+            <property name="height-request">40</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image-position">bottom</property>
           </object>
           <packing>
             <property name="x">20</property>
