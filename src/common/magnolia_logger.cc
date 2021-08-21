@@ -2,10 +2,10 @@
  * =====================================================================================
  *
  *       Filename:  magnolia_logger.cc
- *       
  *
- *    Description:  
- *      This file is a magnolia logger source file 
+ *
+ *    Description:
+ *      This file is a magnolia logger source file
  *
  * =====================================================================================
  */
@@ -23,7 +23,16 @@ using namespace std;
 MagnoliaLogger* MagnoliaLogger::instance_= nullptr;
 const char *log_message_level_string[LOG_LEVEL_MAX] = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
 
-MagnoliaLogger::MagnoliaLogger() 
+#define COLOR_BLACK   "\x1b[30m"
+#define COLOR_RED     "\x1b[31m"
+#define COLOR_GREEN   "\x1b[32m"
+#define COLOR_YELLO   "\x1b[33m"
+#define COLOR_BLUE    "\x1b[34m"
+#define COLOR_MAGENTA "\x1b[35m"
+#define COLOR_CYAN    "\x1b[36m"
+#define COLOR_RESET   "\x1b[0m"
+
+MagnoliaLogger::MagnoliaLogger()
 {
 	log_level_ = LOG_LEVEL_ERROR;
 }
@@ -83,14 +92,20 @@ void MagnoliaLogger::print_log(const char*function_name, int line, const char *t
     oss << std::put_time(&buf, "%H:%M:%S"); // HH:MM:SS
     oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
 
-	if (this->log_level_ >= LOG_LEVEL_TRACE) {
-		snprintf(log_string, 256, "%-5s [%-12s] [%-30s] [%s:%d] : ", log_message_level_string[log_level], oss.str().c_str(), tag_name, function_name, line);
+	if (log_level == LOG_LEVEL_ERROR) {
+		snprintf(log_string, 512, COLOR_RED "%-5s [%-12s] [%-30s] [%s:%d] : %s" COLOR_RESET,
+				log_message_level_string[log_level], oss.str().c_str(), tag_name, function_name, line, str);
 	}
 	else {
-		snprintf(log_string, 256, "%-5s [%-12s] [%s:%d] : ", log_message_level_string[log_level], oss.str().c_str(), function_name, line);
+		if (this->log_level_ >= LOG_LEVEL_TRACE) {
+			snprintf(log_string, 512, "%-5s [%-12s] [%-30s] [%s:%d] : %s", log_message_level_string[log_level],
+					oss.str().c_str(), tag_name, function_name, line, str);
+		}
+		else {
+			snprintf(log_string, 512, "%-5s [%-12s] [%s:%d] : %s", log_message_level_string[log_level],
+					oss.str().c_str(), function_name, line, str);
+		}
 	}
-	strncat(log_string, str, 512);
-
 	va_list args;
 	va_start(args, str);
 	vprintf(log_string, args);
