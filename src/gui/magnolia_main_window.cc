@@ -52,6 +52,8 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 
 	magnolia_main_ref_glade_->get_widget("sub_menu_new", p_sub_menu_new_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_open", p_sub_menu_open_);
+	magnolia_main_ref_glade_->get_widget("sub_menu_save", p_sub_menu_save_);
+	magnolia_main_ref_glade_->get_widget("sub_menu_save_as", p_sub_menu_save_as_);
 	magnolia_main_ref_glade_->get_widget("sub_menu_image_control_window", p_sub_menu_image_control_window_);
 	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_error", p_sub_radio_menu_debug_log_level_error_);
 	magnolia_main_ref_glade_->get_widget("sub_radio_menu_debug_log_level_warn", p_sub_radio_menu_debug_log_level_warn_);
@@ -68,6 +70,12 @@ MagnoliaMainWindow::MagnoliaMainWindow(BaseObjectType* cobject, const Glib::RefP
 
 	p_sub_menu_open_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_open_activate));
+
+	p_sub_menu_save_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_menu_save_activate));
+
+	p_sub_menu_save_as_->signal_activate().connect(sigc::mem_fun(*this,
+				&MagnoliaMainWindow::on_sub_menu_save_as_activate));
 
 	p_sub_menu_image_control_window_->signal_activate().connect(sigc::mem_fun(*this,
 				&MagnoliaMainWindow::on_sub_menu_image_control_window_activate));
@@ -137,16 +145,27 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 	dialog.add_button("_Open", Gtk::RESPONSE_OK);
 	dialog.set_current_folder(magnolia_xml_struct_->get_default_image_path());
 
-	auto filter_image= Gtk::FileFilter::create();
+	int size = Gdk::Pixbuf::get_formats().size();
+	char buf[30] = {0,};
+	auto filter_image = Gtk::FileFilter::create();
 	filter_image->set_name("Image files");
-	filter_image->add_mime_type("image/png");
-	filter_image->add_mime_type("image/bmp");
-	filter_image->add_mime_type("image/jpg");
-	filter_image->add_mime_type("image/jpeg");
-	filter_image->add_pattern("*.png");
-	filter_image->add_pattern("*.bmp");
-	filter_image->add_pattern("*.jpg");
-	filter_image->add_pattern("*.jpeg");
+
+	for (int i = 0; i < size; i++) {
+		if (Gdk::Pixbuf::get_formats()[i].is_writable()) {
+			memset(buf, 0x0, sizeof(buf));
+			memcpy(buf, "image/", strlen("image/") + 1);
+			if (!memcmp(Gdk::Pixbuf::get_formats()[i].get_name().c_str(), "ico", strlen("ico") + 1)) {
+				strncat(buf, "x-icon", strlen("x-icon") + 1);
+			}
+			else {
+				int len = strlen(Gdk::Pixbuf::get_formats()[i].get_name().c_str()) + 1;
+				strncat(buf, Gdk::Pixbuf::get_formats()[i].get_name().c_str(), len);
+			}
+			filter_image->add_mime_type(buf);
+			filter_image->add_pattern("*." + Gdk::Pixbuf::get_formats()[i].get_name());
+		}
+	}
+
 	dialog.add_filter(filter_image);
 
 	auto filter_any = Gtk::FileFilter::create();
@@ -192,6 +211,22 @@ void MagnoliaMainWindow::on_sub_menu_open_activate(void)
 				MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "Unexpected button clicked.\n");
 				break;
 			}
+	}
+}
+
+void MagnoliaMainWindow::on_sub_menu_save_activate(void)
+{
+	//TODO
+	//For now, we temporarily implemented save() and save_as() the same.
+	if (current_image_window_ != nullptr) {
+		current_image_window_->on_popup_menu_save_as_event();
+	}
+}
+
+void MagnoliaMainWindow::on_sub_menu_save_as_activate(void)
+{
+	if (current_image_window_ != nullptr) {
+		current_image_window_->on_popup_menu_save_as_event();
 	}
 }
 

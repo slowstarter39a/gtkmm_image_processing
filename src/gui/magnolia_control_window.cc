@@ -32,10 +32,10 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_cm
 		return;
 	}
 
-	Glib::RefPtr<Gdk::Pixbuf> src_image_pixbuf =  image_window->get_src_image_pixbuf();
+	Glib::RefPtr<Gdk::Pixbuf> src_image_pixbuf =  image_window->get_current_image_pixbuf();
 	Gdk::Pixbuf &src_pixbuf= *src_image_pixbuf.operator->(); // just for convenience
 
-	Glib::ustring src_label_text = image_window->get_src_image_label_text();
+	Glib::ustring src_label_text = image_window->get_current_image_label_text();
 	vector<pixbuf_label> src_img = {{&src_pixbuf, &src_label_text}};
 
 	Glib::RefPtr<Gdk::Pixbuf> *dst_image_pixbuf = new Glib::RefPtr<Gdk::Pixbuf>[result_image_count];
@@ -167,7 +167,7 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	Glib::RefPtr<Gdk::Pixbuf> image_read_buf;
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "magnolia_parent = %p\n", magnolia_parent);
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "get_current_image_window() = %p\n", magnolia_parent->get_current_image_window());
-	image_read_buf = magnolia_parent->get_current_image_window()->get_src_image_pixbuf();
+	image_read_buf = magnolia_parent->get_current_image_window()->get_current_image_pixbuf();
 	return image_read_buf;
 }
 

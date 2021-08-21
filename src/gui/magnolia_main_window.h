@@ -41,6 +41,8 @@ class MagnoliaMainWindow : public Gtk::Window
 		Gtk::MenuBar *p_main_menu_bar_;
 		Gtk::ImageMenuItem *p_sub_menu_new_;
 		Gtk::ImageMenuItem *p_sub_menu_open_;
+		Gtk::ImageMenuItem *p_sub_menu_save_;
+		Gtk::ImageMenuItem *p_sub_menu_save_as_;
 		Gtk::MenuItem *p_sub_menu_image_control_window_;
 		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_error_;
 		Gtk::RadioMenuItem *p_sub_radio_menu_debug_log_level_warn_;
@@ -60,6 +62,8 @@ class MagnoliaMainWindow : public Gtk::Window
 
 		void on_sub_menu_new_activate();
 		void on_sub_menu_open_activate();
+		void on_sub_menu_save_activate();
+		void on_sub_menu_save_as_activate();
 		void on_sub_menu_about_activate();
 		void on_sub_menu_image_control_window_activate();
 		void on_sub_radio_menu_debug_log_level_set();
