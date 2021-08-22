@@ -20,7 +20,7 @@ ImageProcessingOpenCv::~ImageProcessingOpenCv()
 {
 }
 
-int ImageProcessingOpenCv::image_processing_color_image_to_gray_image(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
+int ImageProcessingOpenCv::image_processing_color_image_to_gray_image(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
 {
 	Gdk::Pixbuf *src_img_pixbuf = src_img[0].pixbuf;
 	Gdk::Pixbuf *dst_img_pixbuf = dst_img[0].pixbuf;
@@ -50,7 +50,7 @@ int ImageProcessingOpenCv::image_processing_color_image_to_gray_image(magnolia_c
 	return MAGNOLIA_SUCCESS;
 }
 
-int ImageProcessingOpenCv::image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
+int ImageProcessingOpenCv::image_processing_inversion(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
 {
 	Gdk::Pixbuf *src_img_pixbuf = src_img[0].pixbuf;
 	Gdk::Pixbuf *dst_img_pixbuf = dst_img[0].pixbuf;
@@ -80,6 +80,11 @@ int ImageProcessingOpenCv::image_processing_inversion(magnolia_cmd_param_type *c
 	return MAGNOLIA_SUCCESS;
 }
 
+int ImageProcessingOpenCv::image_processing_image_binarization(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img)
+{
+	return MAGNOLIA_SUCCESS;
+}
+
 cv::Mat ImageProcessingOpenCv::convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img)
 {
 	if (src_img.get_has_alpha()) {
@@ -92,7 +97,7 @@ cv::Mat ImageProcessingOpenCv::convert_gdk_pixbuf_to_cv_mat(Gdk::Pixbuf &src_img
 	}
 }
 
-int ImageProcessingOpenCv::image_processing_not_implemented(magnolia_cmd_param_type *cmd)
+int ImageProcessingOpenCv::image_processing_not_implemented(magnolia_param_type *cmd)
 {
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "This image processing API has not been implemented! class = ImageProcessingOpenCv, cmd id = %d\n", cmd->mag_cmd);
 	return MAGNOLIA_NOT_IMPLEMENTED;

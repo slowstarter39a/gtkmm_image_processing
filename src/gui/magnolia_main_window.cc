@@ -17,10 +17,6 @@
 using namespace std;
 static const char *tag = __FILE__;
 
-MagnoliaMainWindow::MagnoliaMainWindow()
-{ 
-}
-
 MagnoliaMainWindow::~MagnoliaMainWindow()
 {
 	std::map<int, ImageWindowStruct*>::iterator iter;

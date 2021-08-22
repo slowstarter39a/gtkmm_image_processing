@@ -27,9 +27,10 @@ class ImageProcessingMain
 {
 	public:
 		virtual ~ImageProcessingMain();
-		virtual int image_processing_color_image_to_gray_image(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
-		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
-		virtual int image_processing_not_implemented(magnolia_cmd_param_type *cmd) = 0;
+		virtual int image_processing_color_image_to_gray_image(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
+		virtual int image_processing_inversion(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
+		virtual int image_processing_image_binarization(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
+		virtual int image_processing_not_implemented(magnolia_param_type *cmd) = 0;
 		void print_source_image_info(const char *function, int row_stride, int n_channel, int has_alpha_channel, int width, int height);
 
 	protected:
@@ -38,8 +39,8 @@ class ImageProcessingMain
 
 };
 
-//typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
-typedef int image_processing_handler_t(int lib_type, magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
+//typedef int image_processing_handler_t(int lib_type, magnolia_param_type *cmd, Gdk::Pixbuf &src_img, Gdk::Pixbuf &dst_img);
+typedef int image_processing_handler_t(int lib_type, magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
 typedef int image_processing_log_level_handler_t(int log_level);
 
 #define CALL_MEMBER_FUNCTION(obj, ptrToMember) (obj->*ptrToMember)

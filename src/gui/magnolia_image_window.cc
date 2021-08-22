@@ -112,7 +112,6 @@ void MagnoliaImageWindow::on_show()
 		current_img_list_struct_->frame->set_size_request(current_img_list_struct_->image->get_width() + 10, 
 				current_img_list_struct_->image->get_height() + 30);
 	}
-
 }
 
 
@@ -194,7 +193,7 @@ Glib::ustring MagnoliaImageWindow::get_current_image_label_text()
 	return current_img_list_struct_->label->get_text();
 }
 
-void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count)
+ImageListStruct* MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count)
 { 
 	int src_frame_width = current_img_list_struct_->frame->get_allocated_width();
 	int src_frame_x_pos = fixed_->child_property_x(*(current_img_list_struct_->frame));
@@ -211,7 +210,7 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Gli
 	img_list->label->set_line_wrap(true);
 
 	if (!img_list || !img_list->frame || !img_list->eventbox || !img_list->image)
-		return;
+		return nullptr;
 
 	Gdk::RGBA color;
 	color.set_rgba(0.8588, 0.8588, 0.8588, 1.0);
@@ -236,6 +235,20 @@ void MagnoliaImageWindow::show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Gli
 	Gtk::Window::on_show();
 
 	img_list->frame->set_size_request(dst_buf->get_width() + 10, dst_buf->get_height() + 30);
+
+	return img_list;
+}
+
+void MagnoliaImageWindow::update_dst_image(ImageListStruct *image, Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count)
+{
+	image->image->set(dst_buf);
+	image->label->set_text("<" + label_text + ">");
+	image->label->set_line_wrap(true);
+
+	if (!image|| !image->frame || !image->eventbox || !image->image)
+		return;
+
+	image->frame->set_size_request(dst_buf->get_width() + 10, dst_buf->get_height() + 30);
 }
 
 void MagnoliaImageWindow::set_popup_menu()

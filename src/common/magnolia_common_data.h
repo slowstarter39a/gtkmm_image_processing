@@ -23,13 +23,24 @@ enum magnolia_cmd_enum_type
 {
 	MAGNOLIA_CMD_COLOR_IMAGE_TO_GRAY_IMAGE    = 0,
 	MAGNOLIA_CMD_INVERSION,
+	MAGNOLIA_CMD_IMAGE_BINARIZATION,
 	MAGNOLIA_CMD_HISTOGRAM,
 	MAGNOLIA_CMD_MAX,
 };
 
-struct magnolia_cmd_param_type
+struct magnolia_image_binarization_type
+{
+	int value;
+	void **dst_image;
+};
+
+struct magnolia_param_type
 {
 	magnolia_cmd_enum_type		mag_cmd;
+	union {
+		magnolia_image_binarization_type img_binarization;
+	} param;
+	int result_image_count;
 };
 
 struct pixbuf_label
