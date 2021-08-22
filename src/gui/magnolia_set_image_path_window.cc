@@ -17,7 +17,6 @@ static const char *tag = __FILE__;
 
 MagnoliaSetImagePathWindow::~MagnoliaSetImagePathWindow()
 {
-
 }
 
 MagnoliaSetImagePathWindow::MagnoliaSetImagePathWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade)

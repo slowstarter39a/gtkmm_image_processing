@@ -20,14 +20,15 @@ class ImageProcessingMagnolia : public ImageProcessingMain
 {
 	public:
 		virtual ~ImageProcessingMagnolia();
-		virtual int image_processing_color_image_to_gray_image(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
-		virtual int image_processing_inversion(magnolia_cmd_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
-		virtual int image_processing_not_implemented(magnolia_cmd_param_type *cmd);
+		virtual int image_processing_color_image_to_gray_image(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
+		virtual int image_processing_inversion(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
+		virtual int image_processing_image_binarization(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img);
+		virtual int image_processing_not_implemented(magnolia_param_type *cmd);
 
 	protected:
 	private:
 };
 
-typedef int (ImageProcessingMagnolia::*magnolia_image_processing_handler)(magnolia_cmd_param_type*, std::vector<pixbuf_label>&, std::vector<pixbuf_label>&);
+typedef int (ImageProcessingMagnolia::*magnolia_image_processing_handler)(magnolia_param_type*, std::vector<pixbuf_label>&, std::vector<pixbuf_label>&);
 
 #endif //_IMAGE_PROCESSING_MAGNOLIA_H 

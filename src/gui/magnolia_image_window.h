@@ -42,7 +42,8 @@ class MagnoliaImageWindow :public Gtk::Window
 		virtual bool on_focus_in_event(GdkEventFocus* focus_event);
 		Glib::RefPtr<Gdk::Pixbuf> get_current_image_pixbuf();
 		Glib::ustring get_current_image_label_text();
-		void show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count);
+		ImageListStruct* show_dst_image(Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count);
+		void update_dst_image(ImageListStruct *image, Glib::RefPtr<Gdk::Pixbuf> &dst_buf, Glib::ustring label_text, int result_image_count);
 		bool on_eventbox_button_motion_notify(GdkEventMotion* event);
 		void set_popup_menu();
 		void on_popup_menu_save_as_event();
