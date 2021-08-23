@@ -31,7 +31,7 @@ class ImageProcessingMain
 		virtual int image_processing_inversion(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
 		virtual int image_processing_image_binarization(magnolia_param_type *cmd, std::vector<pixbuf_label> &src_img, std::vector<pixbuf_label> &dst_img) = 0;
 		virtual int image_processing_not_implemented(magnolia_param_type *cmd) = 0;
-		void print_source_image_info(const char *function, int row_stride, int n_channel, int has_alpha_channel, int width, int height);
+		magnolia_error_type check_and_print_image_info(const char *function, Gdk::Pixbuf *img_pixbuf, struct gdk_pixbuf_image_info *pixbuf_info);
 
 	protected:
 	private:

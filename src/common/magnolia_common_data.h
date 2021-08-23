@@ -49,6 +49,17 @@ struct pixbuf_label
 	Glib::ustring *text;
 };
 
+struct gdk_pixbuf_image_info
+{
+	int row_stride;
+	int n_channels;
+	int width;
+	int height;
+	bool has_alpha;
+	int colorspace;
+	int bits_per_sample;
+};
+
 #endif /* _MAGNOLIA_COMMON_DATA_H  */
 
 
