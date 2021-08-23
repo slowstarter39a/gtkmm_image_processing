@@ -21,7 +21,7 @@
 using namespace std;
 static const char *tag = __FILE__;
 
-ImageListStruct* dst_image_already_created(magnolia_param_type *cmd);
+ImageListStruct* was_dst_image_already_created(magnolia_param_type *cmd);
 void store_dst_image_struct(magnolia_param_type *cmd, ImageListStruct *image);
 
 void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_param_type *cmd)
@@ -62,7 +62,7 @@ void do_thread_work(MagnoliaImageWindow *image_window, int lib_type, magnolia_pa
 
 	if (!result) {
 		for (int i = 0; i < cmd->result_image_count; i++) {
-			ImageListStruct *image = dst_image_already_created(cmd);
+			ImageListStruct *image = was_dst_image_already_created(cmd);
 			if (image) {
 				image_window->update_dst_image(image, dst_image_pixbuf[i], dst_label_text[i], i);
 			}
@@ -245,7 +245,7 @@ Glib::RefPtr<Gdk::Pixbuf> MagnoliaControlWindow::get_current_image_buf()
 	return image_read_buf;
 }
 
-ImageListStruct* dst_image_already_created(magnolia_param_type *cmd)
+ImageListStruct* was_dst_image_already_created(magnolia_param_type *cmd)
 {
 	MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "cmd->mag_cmd = %d\n", cmd->mag_cmd);
 	if (cmd->mag_cmd == MAGNOLIA_CMD_IMAGE_BINARIZATION) {

@@ -86,12 +86,32 @@ ImageProcessingMain::~ImageProcessingMain()
 {
 }
 
-void ImageProcessingMain::print_source_image_info(const char *function, int row_stride, int n_channel, int has_alpha_channel, int width, int height)
+magnolia_error_type ImageProcessingMain::check_and_print_image_info(const char *function, Gdk::Pixbuf *img_pixbuf, struct gdk_pixbuf_image_info *pixbuf_info)
 {
+	pixbuf_info->row_stride = img_pixbuf->get_rowstride();
+	pixbuf_info->n_channels = img_pixbuf->get_n_channels();
+	pixbuf_info->width = img_pixbuf->get_width();
+	pixbuf_info->height = img_pixbuf->get_height();
+	pixbuf_info->has_alpha = img_pixbuf->get_has_alpha();
+	pixbuf_info->colorspace = img_pixbuf->get_colorspace();
+	pixbuf_info->bits_per_sample = img_pixbuf->get_bits_per_sample();
+
 	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "function   = %s\n", function);
-	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "row_stride = %d\n", row_stride);
-	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "n_channels = %d\n", n_channel);
-	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "has_alpha  = %d\n", has_alpha_channel);
-	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "width      = %d\n", width);
-	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "height     = %d\n", height);
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "row_stride = %d\n", img_pixbuf->get_rowstride());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "n_channels = %d\n", img_pixbuf->get_n_channels());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "has_alpha  = %d\n", img_pixbuf->get_has_alpha());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "width      = %d\n", img_pixbuf->get_width());
+	MGNL_PRINTF(tag, LOG_LEVEL_DEBUG, "height     = %d\n", img_pixbuf->get_height());
+
+	if (pixbuf_info->colorspace != Gdk::COLORSPACE_RGB) {
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "colorspace = %d\n", pixbuf_info->colorspace);
+		return MAGNOLIA_FAILURE;
+	}
+	if (pixbuf_info->bits_per_sample != 8) {
+		MGNL_PRINTF(tag, LOG_LEVEL_ERROR, "bits_per_sample = %d\n", pixbuf_info->bits_per_sample);
+		return MAGNOLIA_FAILURE;
+	}
+
+	return MAGNOLIA_SUCCESS;
 }
+
